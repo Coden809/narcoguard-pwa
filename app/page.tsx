@@ -11,15 +11,26 @@ import { NG2WatchStatus } from "@/components/watch/ng2-watch-status"
 import { QuickActions } from "@/components/dashboard/quick-actions"
 import { ActivityFeed } from "@/components/dashboard/activity-feed"
 import { Heart, Shield, Users, Zap } from "lucide-react"
+import { getUserPreferences } from "@/lib/user-preferences"
+import { OnboardingFlow } from "@/components/onboarding/onboarding-flow"
 
 export default function DashboardPage() {
   const [mounted, setMounted] = useState(false)
+  const [showOnboarding, setShowOnboarding] = useState(false)
 
   useEffect(() => {
     setMounted(true)
+    const preferences = getUserPreferences()
+    if (!preferences.hasCompletedOnboarding) {
+      setShowOnboarding(true)
+    }
   }, [])
 
   if (!mounted) return null
+
+  if (showOnboarding) {
+    return <OnboardingFlow onComplete={() => setShowOnboarding(false)} />
+  }
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">

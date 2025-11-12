@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { MapPin, Navigation, Users } from "lucide-react"
+import { useLocation } from "@/lib/hooks/use-location"
 
 interface Hero {
   id: number
@@ -13,6 +14,8 @@ interface Hero {
 
 export function HeroMap() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const { location: userLocation } = useLocation(true)
+
   const [heroes] = useState<Hero[]>([
     { id: 1, name: "Hero Alpha", lat: 0.3, lng: 0.2, status: "available" },
     { id: 2, name: "Hero Beta", lat: -0.2, lng: 0.4, status: "available" },
@@ -77,6 +80,13 @@ export function HeroMap() {
       ctx.fillStyle = "#00d9ff"
       ctx.fill()
 
+      if (userLocation) {
+        ctx.fillStyle = "#ffffff"
+        ctx.font = "10px monospace"
+        const locationText = `${userLocation.latitude.toFixed(4)}, ${userLocation.longitude.toFixed(4)}`
+        ctx.fillText(locationText, centerX - 50, centerY - 25)
+      }
+
       // Draw heroes
       heroes.forEach((hero, index) => {
         const x = centerX + hero.lng * scale
@@ -115,7 +125,7 @@ export function HeroMap() {
     }
 
     animate()
-  }, [heroes])
+  }, [heroes, userLocation])
 
   return (
     <div className="space-y-4">
@@ -142,6 +152,15 @@ export function HeroMap() {
         <div className="absolute bottom-4 left-4 glass p-3 rounded-full">
           <Navigation className="w-6 h-6 text-primary pulse-glow" />
         </div>
+
+        {userLocation && (
+          <div className="absolute bottom-4 right-4 glass p-2 rounded-lg text-xs">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-green-500 pulse-glow" />
+              <span>±{userLocation.accuracy.toFixed(0)}m</span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Stats */}

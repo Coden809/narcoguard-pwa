@@ -1,32 +1,57 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import { HolographicCard } from "@/components/effects/holographic-card"
-import { Heart, Activity, Droplet } from "lucide-react"
+import { Heart, Activity, Droplet, Wind } from "lucide-react"
+import { useVitals } from "@/lib/hooks/use-vitals"
 
 export function VitalsMonitor() {
-  const [heartRate, setHeartRate] = useState(72)
-  const [spO2, setSpO2] = useState(98)
-  const [temperature, setTemperature] = useState(98.6)
+  const { vitals, overdoseCheck, isLoading } = useVitals(2000)
 
-  // Simulate real-time vitals updates
   useEffect(() => {
-    const interval = setInterval(() => {
-      setHeartRate((prev) => prev + (Math.random() - 0.5) * 2)
-      setSpO2((prev) => Math.min(100, Math.max(95, prev + (Math.random() - 0.5))))
-      setTemperature((prev) => prev + (Math.random() - 0.5) * 0.1)
-    }, 2000)
+    if (overdoseCheck?.severity === "critical") {
+      console.log("[v0] CRITICAL OVERDOSE INDICATORS DETECTED")
+      // Trigger visual and audio alerts
+    }
+  }, [overdoseCheck])
 
-    return () => clearInterval(interval)
-  }, [])
+  if (isLoading || !vitals) {
+    return (
+      <HolographicCard className="p-6" glowIntensity="high">
+        <div className="text-center py-8">
+          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-sm text-muted-foreground mt-4">Initializing sensors...</p>
+        </div>
+      </HolographicCard>
+    )
+  }
+
+  const getVitalStatus = (value: number, min: number, max: number) => {
+    if (value < min || value > max) return "text-red-500"
+    return "text-green-500"
+  }
 
   return (
-    <HolographicCard className="p-6" glowIntensity="high">
+    <HolographicCard className="p-6" glowIntensity={overdoseCheck?.severity === "critical" ? "high" : "medium"}>
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold font-[family-name:var(--font-orbitron)]">VITAL SIGNS</h3>
-          <div className="w-2 h-2 rounded-full bg-green-500 pulse-glow" />
+          <div
+            className={`w-2 h-2 rounded-full pulse-glow ${overdoseCheck?.isAbnormal ? "bg-red-500" : "bg-green-500"}`}
+          />
         </div>
+
+        {/* Overdose Warning */}
+        {overdoseCheck?.isAbnormal && (
+          <div className="bg-red-500/20 border border-red-500 rounded-lg p-3 emergency-pulse">
+            <p className="text-sm font-bold text-red-500">⚠️ ABNORMAL VITALS - {overdoseCheck.severity.toUpperCase()}</p>
+            <ul className="text-xs text-red-400 mt-1 space-y-1">
+              {overdoseCheck.indicators.map((indicator, i) => (
+                <li key={i}>• {indicator}</li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* Heart Rate */}
         <div className="space-y-2">
@@ -35,15 +60,19 @@ export function VitalsMonitor() {
               <Heart className="w-5 h-5 text-red-500 heartbeat" />
               <span className="text-sm text-muted-foreground">Heart Rate</span>
             </div>
-            <span className="text-2xl font-bold glow-text">{Math.round(heartRate)}</span>
+            <span className={`text-2xl font-bold ${getVitalStatus(vitals.heartRate, 60, 100)}`}>
+              {Math.round(vitals.heartRate)}
+            </span>
           </div>
           <div className="h-2 bg-muted rounded-full overflow-hidden">
             <div
               className="h-full bg-gradient-to-r from-red-500 to-pink-500 pulse-glow transition-all duration-500"
-              style={{ width: `${(heartRate / 120) * 100}%` }}
+              style={{ width: `${Math.min(100, (vitals.heartRate / 120) * 100)}%` }}
             />
           </div>
-          <p className="text-xs text-muted-foreground">BPM - Normal Range</p>
+          <p className="text-xs text-muted-foreground">
+            BPM - {vitals.heartRate >= 60 && vitals.heartRate <= 100 ? "Normal" : "Abnormal"}
+          </p>
         </div>
 
         {/* SpO2 */}
@@ -53,15 +82,39 @@ export function VitalsMonitor() {
               <Activity className="w-5 h-5 text-blue-500" />
               <span className="text-sm text-muted-foreground">Blood Oxygen</span>
             </div>
-            <span className="text-2xl font-bold glow-text">{Math.round(spO2)}%</span>
+            <span className={`text-2xl font-bold ${getVitalStatus(vitals.spO2, 95, 100)}`}>
+              {Math.round(vitals.spO2)}%
+            </span>
           </div>
           <div className="h-2 bg-muted rounded-full overflow-hidden">
             <div
               className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 pulse-glow transition-all duration-500"
-              style={{ width: `${spO2}%` }}
+              style={{ width: `${vitals.spO2}%` }}
             />
           </div>
-          <p className="text-xs text-muted-foreground">SpO2 - Optimal</p>
+          <p className="text-xs text-muted-foreground">SpO2 - {vitals.spO2 >= 95 ? "Optimal" : "Low"}</p>
+        </div>
+
+        {/* Respiratory Rate */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Wind className="w-5 h-5 text-cyan-500" />
+              <span className="text-sm text-muted-foreground">Respiration</span>
+            </div>
+            <span className={`text-2xl font-bold ${getVitalStatus(vitals.respiratoryRate, 12, 20)}`}>
+              {Math.round(vitals.respiratoryRate)}
+            </span>
+          </div>
+          <div className="h-2 bg-muted rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-cyan-500 to-teal-500 pulse-glow transition-all duration-500"
+              style={{ width: `${(vitals.respiratoryRate / 30) * 100}%` }}
+            />
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Breaths/min - {vitals.respiratoryRate >= 12 && vitals.respiratoryRate <= 20 ? "Normal" : "Critical"}
+          </p>
         </div>
 
         {/* Temperature */}
@@ -71,15 +124,19 @@ export function VitalsMonitor() {
               <Droplet className="w-5 h-5 text-orange-500" />
               <span className="text-sm text-muted-foreground">Temperature</span>
             </div>
-            <span className="text-2xl font-bold glow-text">{temperature.toFixed(1)}°F</span>
+            <span className={`text-2xl font-bold ${getVitalStatus(vitals.temperature, 97, 99)}`}>
+              {vitals.temperature.toFixed(1)}°F
+            </span>
           </div>
           <div className="h-2 bg-muted rounded-full overflow-hidden">
             <div
               className="h-full bg-gradient-to-r from-orange-500 to-yellow-500 pulse-glow transition-all duration-500"
-              style={{ width: `${((temperature - 96) / 6) * 100}%` }}
+              style={{ width: `${((vitals.temperature - 96) / 6) * 100}%` }}
             />
           </div>
-          <p className="text-xs text-muted-foreground">Body Temp - Normal</p>
+          <p className="text-xs text-muted-foreground">
+            Body Temp - {vitals.temperature >= 97 && vitals.temperature <= 99 ? "Normal" : "Abnormal"}
+          </p>
         </div>
 
         {/* Waveform visualization */}
@@ -91,12 +148,16 @@ export function VitalsMonitor() {
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
-                className="text-primary pulse-glow"
+                className={`${overdoseCheck?.isAbnormal ? "text-red-500" : "text-primary"} pulse-glow`}
               />
             </svg>
           </div>
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/20 to-transparent animate-pulse" />
         </div>
+
+        <p className="text-xs text-muted-foreground text-center">
+          Using Kalman filtering for sensor fusion • Updated {new Date(vitals.timestamp).toLocaleTimeString()}
+        </p>
       </div>
     </HolographicCard>
   )

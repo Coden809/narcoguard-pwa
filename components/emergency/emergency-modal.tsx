@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { GlowButton } from "@/components/effects/glow-button"
 import { AlertTriangle, X, Phone, Users, MapPin, Siren } from "lucide-react"
 import { ParticleField } from "@/components/effects/particle-field"
+import { useLocation } from "@/lib/hooks/use-location"
 
 interface EmergencyModalProps {
   open: boolean
@@ -15,6 +16,7 @@ interface EmergencyModalProps {
 export function EmergencyModal({ open, onClose, onActivate }: EmergencyModalProps) {
   const [countdown, setCountdown] = useState<number | null>(null)
   const [isActivated, setIsActivated] = useState(false)
+  const { location, error: locationError } = useLocation(true)
 
   useEffect(() => {
     if (countdown === null || countdown <= 0) return
@@ -75,7 +77,16 @@ export function EmergencyModal({ open, onClose, onActivate }: EmergencyModalProp
                 <div className="p-2 rounded-full bg-destructive/20">
                   <MapPin className="w-5 h-5 text-destructive" />
                 </div>
-                <p className="text-sm">Share your location</p>
+                <div className="text-sm flex-1">
+                  <p>Share your location</p>
+                  {location && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {location.latitude.toFixed(6)}, {location.longitude.toFixed(6)}
+                      <span className="ml-2">±{location.accuracy.toFixed(0)}m</span>
+                    </p>
+                  )}
+                  {locationError && <p className="text-xs text-destructive mt-1">{locationError}</p>}
+                </div>
               </div>
 
               <div className="flex items-center gap-3 p-3 rounded-lg glass">
@@ -153,6 +164,11 @@ export function EmergencyModal({ open, onClose, onActivate }: EmergencyModalProp
                 EMERGENCY ACTIVATED
               </h3>
               <p className="text-muted-foreground mt-2">Help is on the way</p>
+              {location && (
+                <p className="text-xs text-muted-foreground mt-2 font-mono">
+                  Location: {location.latitude.toFixed(6)}, {location.longitude.toFixed(6)}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
