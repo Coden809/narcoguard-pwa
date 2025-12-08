@@ -13,16 +13,11 @@ export function useLocation(trackContinuously = false) {
 
   const updateLocation = useCallback(async (loc: Location) => {
     if (loc.latitude === 0 && loc.longitude === 0) {
-      console.log("[v0] Skipping invalid location update")
       return
     }
 
     setLocation(loc)
-    console.log("[v0] Location updated:", {
-      lat: loc.latitude.toFixed(6),
-      lng: loc.longitude.toFixed(6),
-      accuracy: loc.accuracy.toFixed(2),
-    })
+    setError(null) // Clear error on successful update
 
     // Send location to backend
     try {
@@ -32,24 +27,27 @@ export function useLocation(trackContinuously = false) {
         body: JSON.stringify(loc),
       })
     } catch (err) {
-      console.error("[v0] Failed to sync location:", err)
+      // Silent fail for backend sync
     }
   }, [])
 
   const getCurrentLocation = useCallback(async () => {
     try {
       setIsLoading(true)
-      setError(null)
       const loc = await locationService.getCurrentLocation()
       await updateLocation(loc)
       setPermissionState("granted")
+      setError(null)
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Location access denied"
-      setError(errorMessage)
-      console.error("[v0] Location error:", errorMessage)
+      const errorMessage = err instanceof Error ? err.message : "Location unavailable"
 
       if (errorMessage.includes("denied") || errorMessage.includes("permission")) {
+        setError("Location access denied. Please enable location services.")
         setPermissionState("denied")
+      } else {
+        // Don't show timeout errors to user, just log them
+        console.log("[v0] Location temporarily unavailable:", errorMessage)
+        setError(null)
       }
     } finally {
       setIsLoading(false)
@@ -60,12 +58,9 @@ export function useLocation(trackContinuously = false) {
     if (navigator.permissions) {
       navigator.permissions.query({ name: "geolocation" }).then((result) => {
         setPermissionState(result.state as "granted" | "denied" | "prompt")
-        console.log("[v0] Initial permission state:", result.state)
 
-        // Listen for permission changes
         result.addEventListener("change", () => {
           setPermissionState(result.state as "granted" | "denied" | "prompt")
-          console.log("[v0] Permission state changed:", result.state)
         })
       })
     }
@@ -73,10 +68,12 @@ export function useLocation(trackContinuously = false) {
     getCurrentLocation()
 
     if (trackContinuously) {
-      console.log("[v0] Starting continuous location tracking")
-      locationService.startTracking(updateLocation)
+      const startDelay = setTimeout(() => {
+        locationService.startTracking(updateLocation)
+      }, 2000)
+
       return () => {
-        console.log("[v0] Stopping continuous location tracking")
+        clearTimeout(startDelay)
         locationService.stopTracking()
       }
     }

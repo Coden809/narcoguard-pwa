@@ -9,23 +9,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { HolographicCard } from "@/components/effects/holographic-card"
 import { GlowButton } from "@/components/effects/glow-button"
 import { ParticleField } from "@/components/effects/particle-field"
-import {
-  Heart,
-  Shield,
-  Users,
-  MapPin,
-  AlertTriangle,
-  Phone,
-  Bell,
-  Eye,
-  FileText,
-  Award,
-  Sparkles,
-  ChevronRight,
-  ChevronLeft,
-  Check,
-  ArrowDown,
-} from "lucide-react"
+import { Heart, Shield, Users, MapPin, AlertTriangle, Phone, Bell, Eye, FileText, Award, Sparkles, ChevronRight, ChevronLeft, Check, ArrowDown } from 'lucide-react'
 import {
   getUserPreferences,
   saveUserPreferences,
@@ -121,21 +105,22 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
 
   const completeOnboarding = () => {
     console.log("[v0] Completing onboarding...")
-    console.log("[v0] Saving preferences:", {
-      name,
-      hasCompletedOnboarding: true,
-      emergencyContacts: emergencyContacts.length,
-      naloxoneLocations: naloxoneLocations.length,
-    })
-    saveUserPreferences({
+    const finalPreferences = {
       name,
       hasCompletedOnboarding: true,
       emergencyContacts,
       naloxoneLocations,
-      ...preferences,
-    })
+      emergencyPreferences: preferences.emergencyPreferences,
+      privacy: preferences.privacy,
+      features: preferences.features,
+      legal: preferences.legal,
+    }
+    console.log("[v0] Saving final preferences:", finalPreferences)
+    saveUserPreferences(finalPreferences)
     console.log("[v0] Preferences saved, calling onComplete")
-    onComplete()
+    setTimeout(() => {
+      onComplete()
+    }, 100)
   }
 
   const addEmergencyContact = () => {
@@ -175,11 +160,7 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
     <div key="welcome" className="space-y-6">
       <div className="text-center space-y-4">
         <div className="w-32 h-32 mx-auto float-animation">
-          <img
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/narcoguard-icon-Tz9KqfxC9OByY4lzx4tRtKQkr9gAcJ.jpeg"
-            alt="Narcoguard"
-            className="w-full h-full rounded-full pulse-glow"
-          />
+          <img src="/images/narcoguard-icon.jpeg" alt="Narcoguard" className="w-full h-full rounded-full pulse-glow" />
         </div>
         <h1 className="text-5xl font-bold glow-text font-[family-name:var(--font-orbitron)]">WELCOME TO NARCOGUARD</h1>
         <p className="text-xl text-primary">A Movement to Save and Transform Lives</p>
@@ -523,80 +504,82 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
         <p className="text-muted-foreground">Someone is always watching over you</p>
       </div>
       <HolographicCard className="p-8 max-w-2xl mx-auto space-y-6">
-        <div className="flex items-start space-x-3">
-          <Checkbox
-            id="neverUseAlone"
-            checked={preferences.features.neverUseAlone}
-            onCheckedChange={(checked) =>
-              setPreferences({
-                ...preferences,
-                features: { ...preferences.features, neverUseAlone: checked as boolean },
-              })
-            }
-          />
-          <div className="space-y-1">
-            <Label htmlFor="neverUseAlone" className="text-base font-semibold cursor-pointer">
-              Enable Never Use Alone
-            </Label>
-            <p className="text-sm text-muted-foreground">
-              When you use substances, Guardian AI will monitor you continuously and alert help if you don't respond to
-              check-ins
-            </p>
+        <div className="space-y-4">
+          <div className="flex items-start space-x-3">
+            <Checkbox
+              id="neverUseAlone"
+              checked={preferences.features.neverUseAlone}
+              onCheckedChange={(checked) =>
+                setPreferences({
+                  ...preferences,
+                  features: { ...preferences.features, neverUseAlone: checked as boolean },
+                })
+              }
+            />
+            <div className="space-y-1">
+              <Label htmlFor="neverUseAlone" className="text-base font-semibold cursor-pointer">
+                Enable Never Use Alone
+              </Label>
+              <p className="text-sm text-muted-foreground">
+                When you use substances, Guardian AI will monitor you continuously and alert help if you don't respond to
+                check-ins
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
-          <h4 className="font-semibold mb-2 flex items-center gap-2">
-            <Shield className="w-5 h-5 text-primary" />
-            How It Works
-          </h4>
-          <ul className="space-y-2 text-sm text-muted-foreground">
-            <li>• Activate before using substances</li>
-            <li>• Guardian AI sends periodic check-ins</li>
-            <li>• If you don't respond, emergency protocol activates</li>
-            <li>• Heroes and emergency contacts are notified immediately</li>
-          </ul>
-        </div>
-
-        <div className="flex items-start space-x-3">
-          <Checkbox
-            id="autoDetection"
-            checked={preferences.features.autoDetection}
-            onCheckedChange={(checked) =>
-              setPreferences({
-                ...preferences,
-                features: { ...preferences.features, autoDetection: checked as boolean },
-              })
-            }
-          />
-          <div className="space-y-1">
-            <Label htmlFor="autoDetection" className="text-base font-semibold cursor-pointer">
-              Automatic Overdose Detection
-            </Label>
-            <p className="text-sm text-muted-foreground">
-              Guardian AI monitors your vitals 24/7 and detects overdose signs automatically
-            </p>
+          <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
+            <h4 className="font-semibold mb-2 flex items-center gap-2">
+              <Shield className="w-5 h-5 text-primary" />
+              How It Works
+            </h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li>• Activate before using substances</li>
+              <li>• Guardian AI sends periodic check-ins</li>
+              <li>• If you don't respond, emergency protocol activates</li>
+              <li>• Heroes and emergency contacts are notified immediately</li>
+            </ul>
           </div>
-        </div>
 
-        <div className="flex items-start space-x-3">
-          <Checkbox
-            id="voiceActivation"
-            checked={preferences.features.voiceActivation}
-            onCheckedChange={(checked) =>
-              setPreferences({
-                ...preferences,
-                features: { ...preferences.features, voiceActivation: checked as boolean },
-              })
-            }
-          />
-          <div className="space-y-1">
-            <Label htmlFor="voiceActivation" className="text-base font-semibold cursor-pointer">
-              Voice Activation
-            </Label>
-            <p className="text-sm text-muted-foreground">
-              Say "Guardian, help me" to trigger emergency response hands-free
-            </p>
+          <div className="flex items-start space-x-3">
+            <Checkbox
+              id="autoDetection"
+              checked={preferences.features.autoDetection}
+              onCheckedChange={(checked) =>
+                setPreferences({
+                  ...preferences,
+                  features: { ...preferences.features, autoDetection: checked as boolean },
+                })
+              }
+            />
+            <div className="space-y-1">
+              <Label htmlFor="autoDetection" className="text-base font-semibold cursor-pointer">
+                Automatic Overdose Detection
+              </Label>
+              <p className="text-sm text-muted-foreground">
+                Guardian AI monitors your vitals 24/7 and detects overdose signs automatically
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start space-x-3">
+            <Checkbox
+              id="voiceActivation"
+              checked={preferences.features.voiceActivation}
+              onCheckedChange={(checked) =>
+                setPreferences({
+                  ...preferences,
+                  features: { ...preferences.features, voiceActivation: checked as boolean },
+                })
+              }
+            />
+            <div className="space-y-1">
+              <Label htmlFor="voiceActivation" className="text-base font-semibold cursor-pointer">
+                Voice Activation
+              </Label>
+              <p className="text-sm text-muted-foreground">
+                Say "Guardian, help me" to trigger emergency response hands-free
+              </p>
+            </div>
           </div>
         </div>
       </HolographicCard>
@@ -975,11 +958,7 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
     <div key="complete" className="space-y-6">
       <div className="text-center space-y-4">
         <div className="w-32 h-32 mx-auto float-animation">
-          <img
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/narcoguard-icon-Tz9KqfxC9OByY4lzx4tRtKQkr9gAcJ.jpeg"
-            alt="Narcoguard"
-            className="w-full h-full rounded-full pulse-glow"
-          />
+          <img src="/images/narcoguard-icon.jpeg" alt="Narcoguard" className="w-full h-full rounded-full pulse-glow" />
         </div>
         <h2 className="text-3xl font-bold glow-text">You're All Set, {name}!</h2>
         <p className="text-muted-foreground">Welcome to the movement</p>
@@ -995,8 +974,10 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
           {isInstallable ? (
             <GlowButton
               onClick={async () => {
+                console.log("[v0] Install button clicked")
                 const success = await installPWA()
                 if (success) {
+                  console.log("[v0] PWA installed successfully")
                   setTimeout(completeOnboarding, 1000)
                 }
               }}
@@ -1014,8 +995,15 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
             </div>
           )}
 
-          <GlowButton onClick={completeOnboarding} className="w-full bg-green-500 hover:bg-green-600" size="lg">
-            {isInstallable ? "Skip Install & Launch Dashboard" : "Launch Dashboard"}
+          <GlowButton
+            onClick={() => {
+              console.log("[v0] Launch Dashboard clicked")
+              completeOnboarding()
+            }}
+            className="w-full bg-green-500 hover:bg-green-600"
+            size="lg"
+          >
+            {isInstallable ? "Skip Install & " : ""}Launch Dashboard
             <ChevronRight className="w-5 h-5 ml-2" />
           </GlowButton>
         </div>
@@ -1101,33 +1089,54 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
         <div className="mb-8">{steps[step]}</div>
 
         {/* Navigation */}
-        {step < totalSteps - 1 && (
-          <div className="flex justify-between items-center max-w-2xl mx-auto">
-            <Button
-              onClick={prevStep}
-              variant="outline"
-              disabled={step === 0}
-              className="glass neon-border bg-transparent"
-            >
-              <ChevronLeft className="w-4 h-4 mr-2" />
-              Back
-            </Button>
-
-            <GlowButton onClick={nextStep} disabled={isContinueDisabled}>
-              Continue
-              <ChevronRight className="w-4 h-4 ml-2" />
-            </GlowButton>
-          </div>
-        )}
-
-        {step === totalSteps - 1 && (
-          <div className="flex justify-center items-center max-w-2xl mx-auto">
+        <div className="flex justify-between items-center max-w-2xl mx-auto gap-4">
+          {step > 0 && (
             <Button onClick={prevStep} variant="outline" className="glass neon-border bg-transparent">
               <ChevronLeft className="w-4 h-4 mr-2" />
               Back
             </Button>
-          </div>
-        )}
+          )}
+
+          {step < totalSteps - 1 ? (
+            <GlowButton onClick={nextStep} disabled={isContinueDisabled} className="ml-auto">
+              Continue
+              <ChevronRight className="w-4 h-4 ml-2" />
+            </GlowButton>
+          ) : null}
+          
+          {step === totalSteps - 1 && (
+            <div className="ml-auto flex flex-col gap-3 flex-1">
+              {isInstallable && (
+                <GlowButton
+                  onClick={async () => {
+                    console.log("[v0] Install button clicked")
+                    const success = await installPWA()
+                    if (success) {
+                      console.log("[v0] PWA installed successfully")
+                      setTimeout(completeOnboarding, 500)
+                    }
+                  }}
+                  className="w-full"
+                  size="lg"
+                >
+                  Install & Launch Dashboard
+                </GlowButton>
+              )}
+
+              <GlowButton
+                onClick={() => {
+                  console.log("[v0] Launch Dashboard button clicked")
+                  completeOnboarding()
+                }}
+                className="w-full bg-green-500 hover:bg-green-600"
+                size="lg"
+              >
+                {isInstallable ? "Skip Install & " : ""}Launch Dashboard
+                <ChevronRight className="w-5 h-5 ml-2" />
+              </GlowButton>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

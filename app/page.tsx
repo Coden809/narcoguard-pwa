@@ -10,26 +10,30 @@ import { GuardianAI } from "@/components/ai/guardian-ai"
 import { NG2WatchStatus } from "@/components/watch/ng2-watch-status"
 import { QuickActions } from "@/components/dashboard/quick-actions"
 import { ActivityFeed } from "@/components/dashboard/activity-feed"
-import { Heart, Shield, Users, Zap } from "lucide-react"
+import { Heart, Shield, Users, Zap } from 'lucide-react'
 import { getUserPreferences } from "@/lib/user-preferences"
 import { OnboardingFlow } from "@/components/onboarding/onboarding-flow"
 
 export default function DashboardPage() {
   const [mounted, setMounted] = useState(false)
-  const [showOnboarding, setShowOnboarding] = useState(false)
+  const [showOnboarding, setShowOnboarding] = useState(true)
 
   useEffect(() => {
     setMounted(true)
     const preferences = getUserPreferences()
-    if (!preferences.hasCompletedOnboarding) {
-      setShowOnboarding(true)
-    }
+    console.log("[v0] Checking onboarding status:", preferences.hasCompletedOnboarding)
+    setShowOnboarding(!preferences.hasCompletedOnboarding)
   }, [])
+
+  const handleOnboardingComplete = () => {
+    console.log("[v0] Onboarding complete, transitioning to dashboard")
+    setShowOnboarding(false)
+  }
 
   if (!mounted) return null
 
   if (showOnboarding) {
-    return <OnboardingFlow onComplete={() => setShowOnboarding(false)} />
+    return <OnboardingFlow onComplete={handleOnboardingComplete} />
   }
 
   return (

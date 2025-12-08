@@ -19,6 +19,8 @@ export class LocationService {
   private retryCount = 0
   private maxRetries = 3
   private useHighAccuracy = true
+  private lastSuccessfulUpdate = 0
+  private timeoutHandle: NodeJS.Timeout | null = null
 
   // Get current location
   async getCurrentLocation(): Promise<Location> {
@@ -28,50 +30,13 @@ export class LocationService {
         return
       }
 
-      const attemptLocation = (highAccuracy: boolean) => {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const location: Location = {
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-              accuracy: position.coords.accuracy,
-              timestamp: position.timestamp,
-            }
-            this.currentLocation = location
-            console.log("[v0] Location obtained:", { accuracy: location.accuracy, highAccuracy })
-            resolve(location)
-          },
-          (error) => {
-            if (highAccuracy && error.code === error.TIMEOUT) {
-              console.log("[v0] High accuracy timeout, falling back to low accuracy")
-              attemptLocation(false)
-            } else {
-              console.error("[v0] Location error:", error.message)
-              reject(error)
-            }
-          },
-          {
-            enableHighAccuracy: highAccuracy,
-            timeout: highAccuracy ? 15000 : 30000, // Increased timeouts
-            maximumAge: highAccuracy ? 0 : 30000, // Allow cached location for low accuracy
-          },
-        )
+      if (this.currentLocation && Date.now() - this.lastSuccessfulUpdate < 60000) {
+        console.log("[v0] Using recent cached location")
+        resolve(this.currentLocation)
+        return
       }
 
-      attemptLocation(true)
-    })
-  }
-
-  // Start continuous location tracking
-  startTracking(callback: (location: Location) => void) {
-    if (!navigator.geolocation) {
-      throw new Error("Geolocation not supported")
-    }
-
-    this.onLocationUpdate = callback
-
-    const startWatch = (highAccuracy: boolean) => {
-      this.watchId = navigator.geolocation.watchPosition(
+      navigator.geolocation.getCurrentPosition(
         (position) => {
           const location: Location = {
             latitude: position.coords.latitude,
@@ -80,53 +45,78 @@ export class LocationService {
             timestamp: position.timestamp,
           }
           this.currentLocation = location
-          this.retryCount = 0 // Reset retry count on success
-
-          if (!this.useHighAccuracy && location.accuracy < 100) {
-            console.log("[v0] Got good fix, upgrading to high accuracy")
-            this.stopTracking()
-            this.useHighAccuracy = true
-            startWatch(true)
-            return
-          }
-
-          callback(location)
+          this.lastSuccessfulUpdate = Date.now()
+          console.log("[v0] Location obtained:", { accuracy: location.accuracy })
+          resolve(location)
         },
         (error) => {
-          console.error("[v0] Location tracking error:", error.message, "Code:", error.code)
+          console.error("[v0] Location error:", error.message, "Code:", error.code)
 
-          if (error.code === error.TIMEOUT) {
-            this.retryCount++
-
-            if (this.retryCount >= this.maxRetries && this.useHighAccuracy) {
-              console.log("[v0] Max retries reached, switching to low accuracy mode")
-              this.stopTracking()
-              this.useHighAccuracy = false
-              this.retryCount = 0
-              startWatch(false)
-            } else if (this.currentLocation) {
-              console.log("[v0] Using last known location during timeout")
-              callback(this.currentLocation)
-            }
-          } else if (error.code === error.PERMISSION_DENIED) {
-            console.error("[v0] Location permission denied")
-            callback({
-              latitude: 0,
-              longitude: 0,
-              accuracy: 0,
-              timestamp: Date.now(),
-            })
+          if (this.currentLocation) {
+            console.log("[v0] Using cached location due to error")
+            resolve(this.currentLocation)
+          } else {
+            reject(error)
           }
         },
         {
-          enableHighAccuracy: highAccuracy,
-          timeout: highAccuracy ? 20000 : 30000, // Longer timeouts for continuous tracking
-          maximumAge: highAccuracy ? 5000 : 30000, // Accept slightly older positions
+          enableHighAccuracy: false, // Start with low accuracy for speed
+          timeout: 10000,
+          maximumAge: 60000, // Accept positions up to 1 minute old
         },
       )
+    })
+  }
+
+  // Start continuous location tracking
+  startTracking(callback: (location: Location) => void) {
+    if (!navigator.geolocation) {
+      throw new Error("Geolocation not supported")
+      return
     }
 
-    startWatch(this.useHighAccuracy)
+    this.onLocationUpdate = callback
+
+    this.watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        const location: Location = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          accuracy: position.coords.accuracy,
+          timestamp: position.timestamp,
+        }
+        this.currentLocation = location
+        this.lastSuccessfulUpdate = Date.now()
+        this.retryCount = 0
+
+        console.log("[v0] Location update:", {
+          lat: location.latitude.toFixed(6),
+          lng: location.longitude.toFixed(6),
+          accuracy: Math.round(location.accuracy),
+        })
+
+        callback(location)
+      },
+      (error) => {
+        console.log("[v0] Location watch error:", error.message, "Code:", error.code)
+
+        if (error.code === error.TIMEOUT || error.code === error.POSITION_UNAVAILABLE) {
+          if (this.currentLocation && Date.now() - this.lastSuccessfulUpdate < 300000) {
+            console.log("[v0] Using cached location during error")
+            callback(this.currentLocation)
+          }
+        } else if (error.code === error.PERMISSION_DENIED) {
+          console.log("[v0] Location permission denied by user")
+          // Stop trying if permission denied
+          this.stopTracking()
+        }
+      },
+      {
+        enableHighAccuracy: false, // Use low accuracy to avoid timeouts
+        timeout: 30000, // Long timeout
+        maximumAge: 120000, // Accept positions up to 2 minutes old
+      },
+    )
   }
 
   // Stop tracking
