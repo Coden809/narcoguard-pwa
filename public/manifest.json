@@ -1,18 +1,71 @@
 {
-  "name": "Narcoguard - Overdose Prevention",
-  "short_name": "Narcoguard",
-  "description": "AI-powered overdose prevention and recovery support",
+  "name": "NarcoGuard - NG2 Auto-Injection Overdose Prevention System",
+  "short_name": "NarcoGuard",
+  "description": "Revolutionary wearable auto-injection technology for overdose prevention. Automatic naloxone deployment, 24/7 monitoring, emergency coordination, and life transformation support.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#0a0f1e",
   "theme_color": "#00d9ff",
   "orientation": "portrait",
+  "categories": ["health", "medical", "lifestyle", "utilities"],
+  "lang": "en-US",
+  "dir": "ltr",
   "icons": [
     {
-      "src": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/narcoguard-icon-Tz9KqfxC9OByY4lzx4tRtKQkr9gAcJ.jpeg",
+      "src": "/images/narcoguard-icon.jpeg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/narcoguard-icon.jpeg",
       "sizes": "512x512",
       "type": "image/jpeg",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/images/narcoguard-icon.jpeg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "maskable"
     }
-  ]
+  ],
+  "screenshots": [
+    {
+      "src": "/images/narcoguard-icon.jpeg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "label": "NarcoGuard Dashboard"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Emergency SOS",
+      "short_name": "SOS",
+      "description": "Activate emergency response immediately",
+      "url": "/?emergency=true",
+      "icons": [{ "src": "/images/narcoguard-icon.jpeg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Hero Network",
+      "short_name": "Heroes",
+      "description": "View nearby heroes and support",
+      "url": "/?view=heroes",
+      "icons": [{ "src": "/images/narcoguard-icon.jpeg", "sizes": "192x192" }]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "permissions": ["geolocation", "notifications"],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
 }

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { HolographicCard } from "@/components/effects/holographic-card"
 import { GlowButton } from "@/components/effects/glow-button"
-import { Watch, Battery, Bluetooth, Droplet, Zap, Sun, Settings } from "lucide-react"
+import { Watch, Battery, Bluetooth, Zap, Sun, Settings, Syringe } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { WatchDetails } from "./watch-details"
@@ -48,7 +48,11 @@ export function NG2WatchStatus() {
               )}
             </div>
             <div>
-              <h3 className="text-lg font-semibold font-[family-name:var(--font-orbitron)]">NG2 WATCH</h3>
+              <h3 className="text-lg font-semibold font-[family-name:var(--font-orbitron)] flex items-center gap-2">
+                NG2 WATCH
+                <span className="text-xs px-2 py-0.5 rounded-full bg-primary/20 text-primary">AUTO-INJECT</span>
+              </h3>
+              {/* */}
               <div className="flex items-center gap-2">
                 <div className={`w-2 h-2 rounded-full ${isConnected ? "bg-green-500" : "bg-red-500"} pulse-glow`} />
                 <span className="text-xs text-muted-foreground">{isConnected ? "Connected" : "Disconnected"}</span>
@@ -97,7 +101,7 @@ export function NG2WatchStatus() {
         <div className="p-4 rounded-lg glass neon-border">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <Droplet
+              <Syringe
                 className={`w-5 h-5 ${
                   naloxoneStatus === "ready"
                     ? "text-green-500"
@@ -107,6 +111,7 @@ export function NG2WatchStatus() {
                 } pulse-glow`}
               />
               <span className="text-sm font-medium">Auto-Injector</span>
+              {/* */}
             </div>
             <span
               className={`text-xs px-2 py-1 rounded-full ${
@@ -121,10 +126,11 @@ export function NG2WatchStatus() {
             </span>
           </div>
           <p className="text-xs text-muted-foreground">
-            {naloxoneStatus === "ready" && "Naloxone cartridge ready for deployment"}
+            {naloxoneStatus === "ready" && "Auto-injection system armed and ready for automatic deployment"}
             {naloxoneStatus === "low" && "Naloxone cartridge needs replacement soon"}
-            {naloxoneStatus === "empty" && "Replace naloxone cartridge immediately"}
+            {naloxoneStatus === "empty" && "Replace naloxone cartridge immediately - auto-injection unavailable"}
           </p>
+          {/* */}
         </div>
 
         {/* Quick stats grid */}

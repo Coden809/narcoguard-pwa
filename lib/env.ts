@@ -1,0 +1,52 @@
+export const env = {
+  // App Configuration
+  APP_NAME: process.env.NEXT_PUBLIC_APP_NAME || "NarcoGuard",
+  APP_URL: process.env.NEXT_PUBLIC_APP_URL || "https://narcoguard.app",
+  API_URL: process.env.NEXT_PUBLIC_API_URL || "/api",
+
+  // Feature Flags
+  ENABLE_LOCATION: process.env.NEXT_PUBLIC_ENABLE_LOCATION_TRACKING !== "false",
+  ENABLE_VITALS: process.env.NEXT_PUBLIC_ENABLE_VITALS_MONITORING !== "false",
+  ENABLE_EMERGENCY: process.env.NEXT_PUBLIC_ENABLE_EMERGENCY_ALERTS !== "false",
+  ENABLE_HERO_NETWORK: process.env.NEXT_PUBLIC_ENABLE_HERO_NETWORK !== "false",
+  ENABLE_AR: process.env.NEXT_PUBLIC_ENABLE_AR_GUIDANCE !== "false",
+
+  // Mock Mode (when true, uses simulated data)
+  MOCK_MODE: !process.env.DATABASE_URL && !process.env.NG2_WATCH_API_KEY,
+
+  // External Services (with mock fallbacks) - Server-side only
+  TWILIO_SID: process.env.TWILIO_ACCOUNT_SID || "",
+  TWILIO_TOKEN: process.env.TWILIO_AUTH_TOKEN || "",
+  TWILIO_PHONE: process.env.TWILIO_PHONE_NUMBER || "",
+  SENDGRID_KEY: process.env.SENDGRID_API_KEY || "",
+  OPENAI_KEY: process.env.OPENAI_API_KEY || "",
+
+  // Database
+  DATABASE_URL: process.env.DATABASE_URL || "",
+
+  // NG2 Watch Integration
+  NG2_WATCH_KEY: process.env.NG2_WATCH_API_KEY || "",
+  NG2_WATCH_ENDPOINT: process.env.NG2_WATCH_ENDPOINT || "",
+
+  // Hero Network
+  HERO_NETWORK_KEY: process.env.HERO_NETWORK_API_KEY || "",
+
+  // Environment
+  IS_PRODUCTION: process.env.NODE_ENV === "production",
+  IS_DEVELOPMENT: process.env.NODE_ENV === "development",
+} as const
+
+// Helper to check if running with mock data
+export const isMockMode = () => env.MOCK_MODE
+
+// Helper to get safe env values for client
+export const getClientEnv = () => ({
+  APP_NAME: env.APP_NAME,
+  APP_URL: env.APP_URL,
+  ENABLE_LOCATION: env.ENABLE_LOCATION,
+  ENABLE_VITALS: env.ENABLE_VITALS,
+  ENABLE_EMERGENCY: env.ENABLE_EMERGENCY,
+  ENABLE_HERO_NETWORK: env.ENABLE_HERO_NETWORK,
+  ENABLE_AR: env.ENABLE_AR,
+  MOCK_MODE: env.MOCK_MODE,
+})

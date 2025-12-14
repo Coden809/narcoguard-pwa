@@ -10,7 +10,7 @@ import { GuardianAI } from "@/components/ai/guardian-ai"
 import { NG2WatchStatus } from "@/components/watch/ng2-watch-status"
 import { QuickActions } from "@/components/dashboard/quick-actions"
 import { ActivityFeed } from "@/components/dashboard/activity-feed"
-import { Heart, Shield, Users, Zap } from 'lucide-react'
+import { Heart, Shield, Users, Zap, Syringe } from "lucide-react"
 import { getUserPreferences } from "@/lib/user-preferences"
 import { OnboardingFlow } from "@/components/onboarding/onboarding-flow"
 
@@ -21,12 +21,10 @@ export default function DashboardPage() {
   useEffect(() => {
     setMounted(true)
     const preferences = getUserPreferences()
-    console.log("[v0] Checking onboarding status:", preferences.hasCompletedOnboarding)
     setShowOnboarding(!preferences.hasCompletedOnboarding)
   }, [])
 
   const handleOnboardingComplete = () => {
-    console.log("[v0] Onboarding complete, transitioning to dashboard")
     setShowOnboarding(false)
   }
 
@@ -50,14 +48,18 @@ export default function DashboardPage() {
           <div className="flex items-center gap-4">
             <div className="relative w-16 h-16 float-animation">
               <img
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/narcoguard-icon-Tz9KqfxC9OByY4lzx4tRtKQkr9gAcJ.jpeg"
+                src="/images/narcoguard-icon.jpeg"
                 alt="Narcoguard"
                 className="w-full h-full rounded-full pulse-glow"
               />
             </div>
             <div>
               <h1 className="text-4xl font-bold glow-text font-[family-name:var(--font-orbitron)]">NARCOGUARD</h1>
-              <p className="text-muted-foreground text-sm">Life-Saving Technology</p>
+              <p className="text-primary text-sm font-semibold flex items-center gap-2">
+                <Syringe className="w-4 h-4" />
+                NG2 Auto-Injection System
+              </p>
+              {/* </CHANGE> */}
             </div>
           </div>
 
@@ -68,6 +70,25 @@ export default function DashboardPage() {
             </div>
           </div>
         </header>
+
+        <HolographicCard className="p-6 mb-6 bg-gradient-to-r from-primary/10 to-secondary/10" glowIntensity="high">
+          <div className="flex items-center gap-4">
+            <div className="p-4 rounded-full bg-primary/20 pulse-glow">
+              <Syringe className="w-8 h-8 text-primary" />
+            </div>
+            <div className="flex-1">
+              <h2 className="text-2xl font-bold glow-text font-[family-name:var(--font-orbitron)]">
+                NARCOGUARD 2 AUTO-INJECTION TECHNOLOGY
+              </h2>
+              <p className="text-muted-foreground mt-1 text-balance">
+                Revolutionary wearable technology that automatically detects overdose signs and deploys naloxone in
+                seconds. Connected to this app for 24/7 monitoring, emergency coordination, and life-saving
+                intervention.
+              </p>
+            </div>
+          </div>
+        </HolographicCard>
+        {/* </CHANGE> */}
 
         {/* Emergency Button - Always visible and prominent */}
         <EmergencyButton />
@@ -150,6 +171,8 @@ export default function DashboardPage() {
             Created by <span className="text-primary font-semibold">Stephen Blanford</span>
           </p>
           <p className="text-xs mt-2">Inspired by family and friends. Saving lives, one guardian at a time.</p>
+          <p className="text-xs mt-2 text-primary font-semibold">Not just saving lives - transforming them.</p>
+          {/* </CHANGE> */}
         </footer>
       </div>
     </div>

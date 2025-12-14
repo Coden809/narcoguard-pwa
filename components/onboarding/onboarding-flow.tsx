@@ -9,7 +9,24 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { HolographicCard } from "@/components/effects/holographic-card"
 import { GlowButton } from "@/components/effects/glow-button"
 import { ParticleField } from "@/components/effects/particle-field"
-import { Heart, Shield, Users, MapPin, AlertTriangle, Phone, Bell, Eye, FileText, Award, Sparkles, ChevronRight, ChevronLeft, Check, ArrowDown } from 'lucide-react'
+import {
+  Heart,
+  Shield,
+  Users,
+  MapPin,
+  AlertTriangle,
+  Phone,
+  Bell,
+  Eye,
+  FileText,
+  Award,
+  Sparkles,
+  ChevronRight,
+  ChevronLeft,
+  Check,
+  ArrowDown,
+  Syringe,
+} from "lucide-react"
 import {
   getUserPreferences,
   saveUserPreferences,
@@ -163,17 +180,22 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
           <img src="/images/narcoguard-icon.jpeg" alt="Narcoguard" className="w-full h-full rounded-full pulse-glow" />
         </div>
         <h1 className="text-5xl font-bold glow-text font-[family-name:var(--font-orbitron)]">WELCOME TO NARCOGUARD</h1>
-        <p className="text-xl text-primary">A Movement to Save and Transform Lives</p>
+        <div className="flex items-center justify-center gap-2 text-xl text-primary">
+          <Syringe className="w-6 h-6" />
+          <span className="font-semibold">NG2 Auto-Injection System</span>
+        </div>
+        <p className="text-xl text-secondary">A Movement to Save and Transform Lives</p>
         <p className="text-muted-foreground max-w-2xl mx-auto text-balance">
-          This isn't just an app—it's a revolution in overdose prevention. Together, we'll set up your personal Guardian
-          AI, connect you to life-saving resources, and empower you to become part of a heroic community.
+          This isn't just an app—it's a revolution in overdose prevention powered by the NarcoGuard 2 wearable with
+          automatic naloxone injection technology. Together, we'll set up your personal Guardian AI, connect you to
+          life-saving resources, and empower you to become part of a heroic community.
         </p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
         <HolographicCard className="p-6 text-center">
-          <Shield className="w-12 h-12 mx-auto mb-4 text-primary pulse-glow" />
-          <h3 className="font-bold mb-2">24/7 Protection</h3>
-          <p className="text-sm text-muted-foreground">AI-powered monitoring keeps you safe</p>
+          <Syringe className="w-12 h-12 mx-auto mb-4 text-primary pulse-glow" />
+          <h3 className="font-bold mb-2">Auto-Injection</h3>
+          <p className="text-sm text-muted-foreground">NG2 watch deploys naloxone automatically when needed</p>
         </HolographicCard>
         <HolographicCard className="p-6 text-center">
           <Users className="w-12 h-12 mx-auto mb-4 text-secondary pulse-glow" />
@@ -521,8 +543,8 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                 Enable Never Use Alone
               </Label>
               <p className="text-sm text-muted-foreground">
-                When you use substances, Guardian AI will monitor you continuously and alert help if you don't respond to
-                check-ins
+                When you use substances, Guardian AI will monitor you continuously and alert help if you don't respond
+                to check-ins
               </p>
             </div>
           </div>
@@ -1103,7 +1125,7 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
               <ChevronRight className="w-4 h-4 ml-2" />
             </GlowButton>
           ) : null}
-          
+
           {step === totalSteps - 1 && (
             <div className="ml-auto flex flex-col gap-3 flex-1">
               {isInstallable && (

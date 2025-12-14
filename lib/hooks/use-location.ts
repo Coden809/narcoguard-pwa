@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react"
 import { LocationService, type Location } from "@/lib/geolocation"
 
 const locationService = new LocationService()
+locationService.setSilentMode(true)
 
 export function useLocation(trackContinuously = false) {
   const [location, setLocation] = useState<Location | null>(null)
@@ -12,14 +13,12 @@ export function useLocation(trackContinuously = false) {
   const [permissionState, setPermissionState] = useState<"granted" | "denied" | "prompt">("prompt")
 
   const updateLocation = useCallback(async (loc: Location) => {
-    if (loc.latitude === 0 && loc.longitude === 0) {
-      return
-    }
-
+    // Accept any location, including fallback
     setLocation(loc)
-    setError(null) // Clear error on successful update
+    setError(null)
+    setIsLoading(false)
 
-    // Send location to backend
+    // Send location to backend (silent fail)
     try {
       await fetch("/api/location", {
         method: "POST",
@@ -36,19 +35,24 @@ export function useLocation(trackContinuously = false) {
       setIsLoading(true)
       const loc = await locationService.getCurrentLocation()
       await updateLocation(loc)
-      setPermissionState("granted")
+
+      // Only set permission granted if we got real coordinates
+      if (loc.accuracy < 1000) {
+        setPermissionState("granted")
+      }
+
       setError(null)
     } catch (err) {
+      // This should rarely happen now since getCurrentLocation resolves with fallback
       const errorMessage = err instanceof Error ? err.message : "Location unavailable"
 
       if (errorMessage.includes("denied") || errorMessage.includes("permission")) {
-        setError("Location access denied. Please enable location services.")
         setPermissionState("denied")
-      } else {
-        // Don't show timeout errors to user, just log them
-        console.log("[v0] Location temporarily unavailable:", errorMessage)
-        setError(null)
       }
+
+      // Use fallback location on any error
+      const fallbackLoc = locationService.getLastLocation()
+      setLocation(fallbackLoc)
     } finally {
       setIsLoading(false)
     }
@@ -56,21 +60,28 @@ export function useLocation(trackContinuously = false) {
 
   useEffect(() => {
     if (navigator.permissions) {
-      navigator.permissions.query({ name: "geolocation" }).then((result) => {
-        setPermissionState(result.state as "granted" | "denied" | "prompt")
-
-        result.addEventListener("change", () => {
+      navigator.permissions
+        .query({ name: "geolocation" })
+        .then((result) => {
           setPermissionState(result.state as "granted" | "denied" | "prompt")
+
+          result.addEventListener("change", () => {
+            setPermissionState(result.state as "granted" | "denied" | "prompt")
+          })
         })
-      })
+        .catch(() => {
+          // Permission API not supported, assume prompt
+          setPermissionState("prompt")
+        })
     }
 
+    // Get initial location
     getCurrentLocation()
 
     if (trackContinuously) {
       const startDelay = setTimeout(() => {
         locationService.startTracking(updateLocation)
-      }, 2000)
+      }, 3000) // Give time for initial location request
 
       return () => {
         clearTimeout(startDelay)

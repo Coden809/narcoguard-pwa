@@ -17,16 +17,41 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "Narcoguard - Life-Saving Overdose Prevention",
-  description: "AI-powered overdose prevention and recovery support system. Created by Stephen Blanford.",
+  title: "NarcoGuard - NG2 Auto-Injection Overdose Prevention System",
+  description:
+    "Revolutionary wearable auto-injection technology powered by AI. The NarcoGuard 2 watch automatically detects and prevents overdoses with instant naloxone deployment. Not just saving lives - transforming them. Created by Stephen Blanford.",
   generator: "v0.app",
   manifest: "/manifest.json",
+  keywords: [
+    "naloxone",
+    "overdose prevention",
+    "auto-injection",
+    "wearable technology",
+    "NG2",
+    "NarcoGuard",
+    "harm reduction",
+    "life-saving",
+    "AI health monitoring",
+  ],
+  authors: [{ name: "Stephen Blanford" }],
+  creator: "Stephen Blanford",
   themeColor: "#00d9ff",
   viewport: "width=device-width, initial-scale=1, maximum-scale=1",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Narcoguard",
+    title: "NarcoGuard NG2",
+  },
+  openGraph: {
+    title: "NarcoGuard - NG2 Auto-Injection System",
+    description: "Revolutionary wearable auto-injection technology that saves lives. Join the movement.",
+    type: "website",
+    siteName: "NarcoGuard",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "NarcoGuard - NG2 Auto-Injection System",
+    description: "Revolutionary wearable auto-injection technology that saves lives. Join the movement.",
   },
 }
 
@@ -38,14 +63,8 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <head>
-        <link
-          rel="icon"
-          href="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/narcoguard-icon-Tz9KqfxC9OByY4lzx4tRtKQkr9gAcJ.jpeg"
-        />
-        <link
-          rel="apple-touch-icon"
-          href="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/narcoguard-icon-Tz9KqfxC9OByY4lzx4tRtKQkr9gAcJ.jpeg"
-        />
+        <link rel="icon" href="/images/narcoguard-icon.jpeg" />
+        <link rel="apple-touch-icon" href="/images/narcoguard-icon.jpeg" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
