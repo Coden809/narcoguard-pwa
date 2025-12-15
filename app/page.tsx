@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import dynamic from "next/dynamic"
 import { ParticleField } from "@/components/effects/particle-field"
 import { HolographicCard } from "@/components/effects/holographic-card"
 import { VitalsMonitor } from "@/components/dashboard/vitals-monitor"
@@ -12,7 +13,21 @@ import { QuickActions } from "@/components/dashboard/quick-actions"
 import { ActivityFeed } from "@/components/dashboard/activity-feed"
 import { Heart, Shield, Users, Zap, Syringe } from "lucide-react"
 import { getUserPreferences } from "@/lib/user-preferences"
-import { OnboardingFlow } from "@/components/onboarding/onboarding-flow"
+
+const OnboardingFlow = dynamic(
+  () => import("@/components/onboarding/onboarding-flow").then((mod) => ({ default: mod.OnboardingFlow })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading Guardian AI...</p>
+        </div>
+      </div>
+    ),
+  },
+)
 
 export default function DashboardPage() {
   const [mounted, setMounted] = useState(false)
@@ -59,7 +74,6 @@ export default function DashboardPage() {
                 <Syringe className="w-4 h-4" />
                 NG2 Auto-Injection System
               </p>
-              {/* </CHANGE> */}
             </div>
           </div>
 
@@ -88,7 +102,6 @@ export default function DashboardPage() {
             </div>
           </div>
         </HolographicCard>
-        {/* </CHANGE> */}
 
         {/* Emergency Button - Always visible and prominent */}
         <EmergencyButton />
@@ -172,7 +185,6 @@ export default function DashboardPage() {
           </p>
           <p className="text-xs mt-2">Inspired by family and friends. Saving lives, one guardian at a time.</p>
           <p className="text-xs mt-2 text-primary font-semibold">Not just saving lives - transforming them.</p>
-          {/* </CHANGE> */}
         </footer>
       </div>
     </div>

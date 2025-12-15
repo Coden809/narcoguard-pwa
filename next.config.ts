@@ -32,8 +32,27 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ["lucide-react", "@radix-ui/react-icons"],
   },
 
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
     config.externals = [...(config.externals || []), { canvas: "canvas" }]
+
+    if (!isServer) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: "all",
+          cacheGroups: {
+            default: false,
+            vendors: false,
+            commons: {
+              name: "commons",
+              chunks: "all",
+              minChunks: 2,
+            },
+          },
+        },
+      }
+    }
+
     return config
   },
 }
