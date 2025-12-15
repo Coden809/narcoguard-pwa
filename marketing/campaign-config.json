@@ -1,0 +1,29 @@
+{
+  "campaign": {
+    "name": "NarcoGuard NG2 Watch Funding",
+    "goal": 50000,
+    "watches": 80,
+    "location": "Broome County, NY",
+    "startDate": "2025-01-01"
+  },
+  "links": {
+    "gofundme": "https://gofund.me/ac8905cca",
+    "app": "https://narcoguard.app",
+    "demo": "https://v0-narcoguard-pwa-build-4zfrgsdwj-coden809s-projects.vercel.app/",
+    "github": "https://github.com/coden809/narcoguard-pwa"
+  },
+  "social": {
+    "hashtags": {
+      "primary": ["NarcoGuard", "SaveLives", "OpioidCrisis"],
+      "secondary": ["Binghamton", "BroomeCounty", "HarmReduction", "OverdosePrevention"],
+      "features": ["HeroNetwork", "AutoInjection", "RecoverySupport"]
+    },
+    "postTimes": ["09:00", "13:00", "18:00"],
+    "timezone": "America/New_York"
+  },
+  "messaging": {
+    "tagline": "80 watches = 80 lives protected 24/7",
+    "mission": "Fighting the opioid crisis with technology and community",
+    "callToAction": "Every donation brings life-saving technology to Broome County"
+  }
+}
