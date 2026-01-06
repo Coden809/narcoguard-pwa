@@ -9,27 +9,17 @@ export function QuickActions() {
   const router = useRouter()
 
   const callSupport = () => {
-    window.location.href = "tel:1-800-662-4357" // SAMHSA National Helpline
+    window.location.href = "tel:1-800-662-4357" // SAMHSA National Helpline - verified correct
   }
 
   const findResources = async () => {
-    const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resolve, reject)
-    }).catch(() => null)
-
-    if (position) {
-      const { latitude, longitude } = position.coords
-      window.open(`https://www.google.com/maps/search/naloxone+near+me/@${latitude},${longitude},13z`, "_blank")
-    } else {
-      window.open("https://www.samhsa.gov/find-help/national-helpline", "_blank")
-    }
+    // Open SAMHSA treatment locator
+    window.open("https://findtreatment.gov/", "_blank")
   }
 
   const openHeroNetwork = () => {
-    router.push("#hero-network")
-    setTimeout(() => {
-      document.getElementById("hero-network")?.scrollIntoView({ behavior: "smooth" })
-    }, 100)
+    // Navigate to hero signup
+    router.push("/hero-signup")
   }
 
   const openTraining = () => {
@@ -37,11 +27,16 @@ export function QuickActions() {
   }
 
   const openEvents = () => {
-    window.open("https://www.narcan.com/patients/how-to-use-narcan", "_blank")
+    // Open recovery resources
+    window.open("https://www.samhsa.gov/find-help", "_blank")
   }
 
   const openSettings = () => {
-    alert("Settings coming soon! You can manage preferences in your profile.")
+    // Clear onboarding to restart setup
+    if (confirm("Reset app and go through setup again?")) {
+      localStorage.removeItem("narcoguard_preferences")
+      window.location.reload()
+    }
   }
 
   return (

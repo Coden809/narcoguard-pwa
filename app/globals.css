@@ -261,6 +261,18 @@
   }
 }
 
+/* Added slide-up animation for install prompt */
+@keyframes slide-up {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 /* Utility classes for special effects */
 .pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
@@ -303,6 +315,11 @@
 .rotate-3d {
   animation: rotate-3d 10s linear infinite;
   transform-style: preserve-3d;
+}
+
+/* Added slide-up utility class */
+.animate-slide-up {
+  animation: slide-up 0.5s ease-out;
 }
 
 /* Glass morphism effect */

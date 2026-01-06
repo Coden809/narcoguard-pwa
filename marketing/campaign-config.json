@@ -1,29 +1,79 @@
 {
   "campaign": {
     "name": "NarcoGuard NG2 Watch Funding",
-    "goal": 50000,
+    "goal": 24584,
     "watches": 80,
+    "costPerWatch": 307.3,
     "location": "Broome County, NY",
-    "startDate": "2025-01-01"
+    "startDate": "2025-01-01",
+    "organization": "Broome Estates LLC",
+    "founder": "Stephen Blanford"
   },
   "links": {
-    "gofundme": "https://gofund.me/ac8905cca",
+    "gofundme": "https://gofund.me/9acf270ea",
     "app": "https://narcoguard.app",
     "demo": "https://v0-narcoguard-pwa-build-4zfrgsdwj-coden809s-projects.vercel.app/",
     "github": "https://github.com/coden809/narcoguard-pwa"
   },
+  "contact": {
+    "email": "narcoguard607@gmail.com",
+    "organization": "Broome Estates LLC",
+    "founder": "Stephen Blanford",
+    "location": "Binghamton, NY"
+  },
   "social": {
     "hashtags": {
-      "primary": ["NarcoGuard", "SaveLives", "OpioidCrisis"],
-      "secondary": ["Binghamton", "BroomeCounty", "HarmReduction", "OverdosePrevention"],
-      "features": ["HeroNetwork", "AutoInjection", "RecoverySupport"]
+      "primary": ["NarcoGuard", "SaveLives", "OpioidCrisis", "EndOverdose"],
+      "secondary": ["Binghamton", "BroomeCounty", "HarmReduction", "OverdosePrevention", "Naloxone"],
+      "features": ["HeroNetwork", "AutoInjection", "RecoverySupport", "NG2Watch"]
     },
-    "postTimes": ["09:00", "13:00", "18:00"],
+    "platforms": ["twitter", "facebook", "instagram", "linkedin", "reddit", "tiktok"],
+    "postTimes": [
+      "06:00",
+      "07:00",
+      "08:00",
+      "09:00",
+      "10:00",
+      "11:00",
+      "12:00",
+      "13:00",
+      "14:00",
+      "15:00",
+      "16:00",
+      "17:00",
+      "18:00",
+      "19:00",
+      "20:00",
+      "21:00",
+      "22:00",
+      "23:00"
+    ],
     "timezone": "America/New_York"
   },
   "messaging": {
     "tagline": "80 watches = 80 lives protected 24/7",
     "mission": "Fighting the opioid crisis with technology and community",
-    "callToAction": "Every donation brings life-saving technology to Broome County"
-  }
+    "callToAction": "Every donation brings life-saving technology to Broome County",
+    "urgency": "130+ Americans die EVERY DAY from opioid overdoses. Help us change that."
+  },
+  "freeAdvertisingSites": [
+    "reddit.com/r/harmreduction",
+    "reddit.com/r/opiates",
+    "reddit.com/r/addiction",
+    "reddit.com/r/stopdrinking",
+    "reddit.com/r/recovery",
+    "reddit.com/r/charity",
+    "reddit.com/r/gofundme",
+    "reddit.com/r/assistance",
+    "reddit.com/r/newyork",
+    "reddit.com/r/binghamton",
+    "craigslist.org/community",
+    "facebook.com/groups/harmreduction",
+    "facebook.com/groups/overdoseprevention",
+    "nextdoor.com",
+    "linkedin.com/feed",
+    "producthunt.com",
+    "hackernews",
+    "indiehackers.com"
+  ]
 }

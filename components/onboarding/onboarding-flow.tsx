@@ -749,9 +749,17 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
         <HolographicCard className="p-6">
           <h3 className="font-bold mb-3">24/7 Support Lines</h3>
           <ul className="space-y-2 text-sm">
-            <li>SAMHSA: 1-800-662-4357</li>
+            <li>
+              <a href="tel:1-800-662-4357" className="text-primary hover:underline">
+                SAMHSA: 1-800-662-4357
+              </a>
+            </li>
             <li>Crisis Text Line: Text HOME to 741741</li>
-            <li>Suicide Prevention: 988</li>
+            <li>
+              <a href="tel:988" className="text-primary hover:underline">
+                Suicide Prevention: 988
+              </a>
+            </li>
           </ul>
         </HolographicCard>
         <HolographicCard className="p-6">
@@ -759,7 +767,11 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
           <p className="text-sm text-muted-foreground mb-3">
             Find local treatment facilities, support groups, and counseling services
           </p>
-          <Button variant="outline" className="w-full glass neon-border bg-transparent">
+          <Button
+            variant="outline"
+            className="w-full glass neon-border bg-transparent"
+            onClick={() => window.open("https://findtreatment.gov/", "_blank")}
+          >
             Search Resources
           </Button>
         </HolographicCard>
@@ -768,14 +780,22 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
           <p className="text-sm text-muted-foreground mb-3">
             Connect with others in recovery through secure, anonymous chat
           </p>
-          <Button variant="outline" className="w-full glass neon-border bg-transparent">
+          <Button
+            variant="outline"
+            className="w-full glass neon-border bg-transparent"
+            onClick={() => window.open("https://www.intherooms.com/", "_blank")}
+          >
             Join Community
           </Button>
         </HolographicCard>
         <HolographicCard className="p-6">
           <h3 className="font-bold mb-3">Wellness Tracking</h3>
           <p className="text-sm text-muted-foreground mb-3">Track your progress, set goals, and celebrate milestones</p>
-          <Button variant="outline" className="w-full glass neon-border bg-transparent">
+          <Button
+            variant="outline"
+            className="w-full glass neon-border bg-transparent"
+            onClick={() => window.open("https://www.recoveryrecord.com/", "_blank")}
+          >
             Start Tracking
           </Button>
         </HolographicCard>
@@ -841,14 +861,18 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
               Not all states have strong Good Samaritan protections. Join our movement to expand these life-saving laws
               nationwide.
             </p>
-            <Button variant="outline" className="w-full glass neon-border bg-transparent">
+            <Button
+              variant="outline"
+              className="w-full glass neon-border bg-transparent"
+              onClick={() => window.open("https://drugpolicy.org/issues/911-good-samaritan-overdose-laws", "_blank")}
+            >
               Support Legislation
             </Button>
           </div>
         </div>
 
-        <div className="p-4 bg-primary/20 rounded-lg border-2 border-primary animate-pulse-slow">
-          <div className="flex items-start space-x-3">
+        <div className="p-6 bg-green-500/30 rounded-lg border-4 border-green-500 animate-pulse-slow">
+          <div className="flex items-start space-x-4">
             <Checkbox
               id="acknowledgedGoodSamaritan"
               checked={preferences.legal.acknowledgedGoodSamaritan}
@@ -859,13 +883,13 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                   legal: { ...preferences.legal, acknowledgedGoodSamaritan: checked as boolean },
                 })
               }}
-              className="mt-1"
+              className="mt-1 w-8 h-8 border-4"
             />
-            <div className="space-y-1">
-              <Label htmlFor="acknowledgedGoodSamaritan" className="text-lg font-bold cursor-pointer text-primary">
-                I understand Good Samaritan protections
+            <div className="space-y-1 flex-1">
+              <Label htmlFor="acknowledgedGoodSamaritan" className="text-2xl font-bold cursor-pointer text-green-400">
+                ✓ I understand Good Samaritan protections
               </Label>
-              <p className="text-sm text-muted-foreground">Check this box to continue</p>
+              <p className="text-base text-green-200 font-semibold">Click the box to continue →</p>
             </div>
           </div>
         </div>
@@ -882,12 +906,22 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
       <HolographicCard className="p-8 max-w-2xl mx-auto space-y-6">
         <div className="p-4 bg-primary/20 rounded-lg border-2 border-primary text-center">
           <ArrowDown className="w-8 h-8 mx-auto mb-2 text-primary animate-bounce" />
-          <p className="font-bold text-lg text-primary">Click Here to Accept Each Agreement Below</p>
+          <p className="font-bold text-lg text-primary">Click Each Box Below to Accept</p>
           <p className="text-sm text-muted-foreground mt-1">All three boxes must be checked to continue</p>
         </div>
 
-        <div className="p-6 bg-blue-500/20 rounded-lg border-2 border-blue-500">
-          <div className="flex items-start space-x-3">
+        <div
+          className="p-6 bg-blue-500/30 rounded-lg border-4 border-blue-500 cursor-pointer hover:bg-blue-500/40 transition-colors"
+          onClick={() => {
+            const newValue = !preferences.legal.acceptedTerms
+            console.log("[v0] Terms checked:", newValue)
+            setPreferences({
+              ...preferences,
+              legal: { ...preferences.legal, acceptedTerms: newValue },
+            })
+          }}
+        >
+          <div className="flex items-start space-x-4">
             <Checkbox
               id="acceptedTerms"
               checked={preferences.legal.acceptedTerms}
@@ -898,22 +932,43 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                   legal: { ...preferences.legal, acceptedTerms: checked as boolean },
                 })
               }}
-              className="mt-1"
+              className="mt-1 w-8 h-8 border-4"
             />
             <div className="space-y-1 flex-1">
-              <Label htmlFor="acceptedTerms" className="text-lg font-bold cursor-pointer text-blue-300">
-                ✓ Terms of Service
+              <Label htmlFor="acceptedTerms" className="text-2xl font-bold cursor-pointer text-blue-300">
+                Terms of Service
               </Label>
               <p className="text-sm text-muted-foreground">
-                I agree to the <button className="text-primary underline font-semibold">Terms of Service</button>
+                I agree to the{" "}
+                <a
+                  href="/terms"
+                  target="_blank"
+                  className="text-primary underline font-semibold hover:text-primary/80"
+                  onClick={(e) => e.stopPropagation()}
+                  rel="noreferrer"
+                >
+                  Terms of Service
+                </a>
               </p>
             </div>
-            {preferences.legal.acceptedTerms && <Check className="w-6 h-6 text-green-500 flex-shrink-0" />}
+            {preferences.legal.acceptedTerms && (
+              <Check className="w-10 h-10 text-green-500 flex-shrink-0 animate-pulse" />
+            )}
           </div>
         </div>
 
-        <div className="p-6 bg-purple-500/20 rounded-lg border-2 border-purple-500">
-          <div className="flex items-start space-x-3">
+        <div
+          className="p-6 bg-purple-500/30 rounded-lg border-4 border-purple-500 cursor-pointer hover:bg-purple-500/40 transition-colors"
+          onClick={() => {
+            const newValue = !preferences.legal.acceptedPrivacy
+            console.log("[v0] Privacy checked:", newValue)
+            setPreferences({
+              ...preferences,
+              legal: { ...preferences.legal, acceptedPrivacy: newValue },
+            })
+          }}
+        >
+          <div className="flex items-start space-x-4">
             <Checkbox
               id="acceptedPrivacy"
               checked={preferences.legal.acceptedPrivacy}
@@ -924,22 +979,43 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                   legal: { ...preferences.legal, acceptedPrivacy: checked as boolean },
                 })
               }}
-              className="mt-1"
+              className="mt-1 w-8 h-8 border-4"
             />
             <div className="space-y-1 flex-1">
-              <Label htmlFor="acceptedPrivacy" className="text-lg font-bold cursor-pointer text-purple-300">
-                ✓ Privacy Policy
+              <Label htmlFor="acceptedPrivacy" className="text-2xl font-bold cursor-pointer text-purple-300">
+                Privacy Policy
               </Label>
               <p className="text-sm text-muted-foreground">
-                I agree to the <button className="text-primary underline font-semibold">Privacy Policy</button>
+                I agree to the{" "}
+                <a
+                  href="/privacy"
+                  target="_blank"
+                  className="text-primary underline font-semibold hover:text-primary/80"
+                  onClick={(e) => e.stopPropagation()}
+                  rel="noreferrer"
+                >
+                  Privacy Policy
+                </a>
               </p>
             </div>
-            {preferences.legal.acceptedPrivacy && <Check className="w-6 h-6 text-green-500 flex-shrink-0" />}
+            {preferences.legal.acceptedPrivacy && (
+              <Check className="w-10 h-10 text-green-500 flex-shrink-0 animate-pulse" />
+            )}
           </div>
         </div>
 
-        <div className="p-6 bg-cyan-500/20 rounded-lg border-2 border-cyan-500">
-          <div className="flex items-start space-x-3">
+        <div
+          className="p-6 bg-cyan-500/30 rounded-lg border-4 border-cyan-500 cursor-pointer hover:bg-cyan-500/40 transition-colors"
+          onClick={() => {
+            const newValue = !preferences.legal.acceptedHIPAA
+            console.log("[v0] HIPAA checked:", newValue)
+            setPreferences({
+              ...preferences,
+              legal: { ...preferences.legal, acceptedHIPAA: newValue },
+            })
+          }}
+        >
+          <div className="flex items-start space-x-4">
             <Checkbox
               id="acceptedHIPAA"
               checked={preferences.legal.acceptedHIPAA}
@@ -950,17 +1026,19 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                   legal: { ...preferences.legal, acceptedHIPAA: checked as boolean },
                 })
               }}
-              className="mt-1"
+              className="mt-1 w-8 h-8 border-4"
             />
             <div className="space-y-1 flex-1">
-              <Label htmlFor="acceptedHIPAA" className="text-lg font-bold cursor-pointer text-cyan-300">
-                ✓ HIPAA Authorization
+              <Label htmlFor="acceptedHIPAA" className="text-2xl font-bold cursor-pointer text-cyan-300">
+                HIPAA Authorization
               </Label>
               <p className="text-sm text-muted-foreground">
                 I authorize sharing my health data with emergency responders when necessary to save my life
               </p>
             </div>
-            {preferences.legal.acceptedHIPAA && <Check className="w-6 h-6 text-green-500 flex-shrink-0" />}
+            {preferences.legal.acceptedHIPAA && (
+              <Check className="w-10 h-10 text-green-500 flex-shrink-0 animate-pulse" />
+            )}
           </div>
         </div>
 

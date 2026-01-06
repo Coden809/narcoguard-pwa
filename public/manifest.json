@@ -2,7 +2,7 @@
   "name": "NarcoGuard - NG2 Auto-Injection Overdose Prevention System",
   "short_name": "NarcoGuard",
   "description": "Revolutionary wearable auto-injection technology for overdose prevention. Automatic naloxone deployment, 24/7 monitoring, emergency coordination, and life transformation support.",
-  "start_url": "/",
+  "start_url": "https://narcoguard.app/",
   "scope": "/",
   "display": "standalone",
   "background_color": "#0a0f1e",
@@ -52,6 +52,13 @@
       "short_name": "Heroes",
       "description": "View nearby heroes and support",
       "url": "/?view=heroes",
+      "icons": [{ "src": "/images/narcoguard-icon.jpeg", "sizes": "192x192" }]
+    },
+    {
+      "name": "AR Training",
+      "short_name": "Training",
+      "description": "Access CPR and naloxone training",
+      "url": "/ar",
       "icons": [{ "src": "/images/narcoguard-icon.jpeg", "sizes": "192x192" }]
     }
   ],

@@ -16,6 +16,7 @@ export interface NaloxoneLocation {
 export interface UserPreferences {
   name: string
   hasCompletedOnboarding: boolean
+  skippedSetup?: boolean
   emergencyContacts: EmergencyContact[]
   naloxoneLocations: NaloxoneLocation[]
   emergencyPreferences: {
@@ -51,6 +52,7 @@ export interface UserPreferences {
 const DEFAULT_PREFERENCES: UserPreferences = {
   name: "",
   hasCompletedOnboarding: false,
+  skippedSetup: false,
   emergencyContacts: [],
   naloxoneLocations: [],
   emergencyPreferences: {
