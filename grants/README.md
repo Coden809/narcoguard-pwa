@@ -84,4 +84,4 @@ In addition to grants, NarcoGuard is funded through:
 **Every grant brings us closer to saving lives in Broome County and beyond.**
 \`\`\`
 
-```json file="" isHidden
+\`\`\`json file="" isHidden

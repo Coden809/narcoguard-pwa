@@ -10,9 +10,9 @@
 
 Run validation before deploying:
 
-```bash
+\`\`\`bash
 npm run validate:production
-```
+\`\`\`
 
 This checks:
 - All dependencies are installed
@@ -37,9 +37,9 @@ This checks:
 ### Option B: Deploy via GitHub
 
 1. **Push to GitHub**:
-   ```bash
+   \`\`\`bash
    git push origin main
-   ```
+   \`\`\`
 
 2. **GitHub Actions will automatically**:
    - Run tests and validation
@@ -60,18 +60,18 @@ This checks:
 5. Update DNS records at your domain registrar:
 
    **A Record:**
-   ```
+   \`\`\`
    Type: A
    Name: @
    Value: 76.76.19.19
-   ```
+   \`\`\`
 
    **CNAME Record:**
-   ```
+   \`\`\`
    Type: CNAME
    Name: www
    Value: cname.vercel-dns.com
-   ```
+   \`\`\`
 
 6. Wait 24-48 hours for DNS propagation
 7. Vercel will automatically provision SSL certificate
@@ -153,7 +153,7 @@ Once deployed, these run automatically:
 ### Share Your Launch:
 
 **For Social Media:**
-```
+\`\`\`
 🚀 NarcoGuard is LIVE at narcoguard.app!
 
 The NG2 Auto-Injection system is revolutionizing overdose prevention.
@@ -167,7 +167,7 @@ Help fund 80 life-saving watches for Broome County:
 https://gofund.me/ac8905cc
 
 #NarcoGuard #OverdosePrevention #SaveLives
-```
+\`\`\`
 
 ### Update Marketing Materials:
 - Replace demo URL with https://narcoguard.app

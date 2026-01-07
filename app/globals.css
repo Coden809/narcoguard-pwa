@@ -1,129 +1,75 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@custom-variant dark (&:is(.dark *));
-
+/* NarcoGuard dark theme with HSL colors for Tailwind v3 compatibility */
 :root {
-  /* Updated color scheme for Narcoguard with teal/cyan medical theme */
-  --background: oklch(0.08 0.02 240);
-  --foreground: oklch(0.98 0.01 180);
-  --card: oklch(0.12 0.03 240);
-  --card-foreground: oklch(0.98 0.01 180);
-  --popover: oklch(0.1 0.03 240);
-  --popover-foreground: oklch(0.98 0.01 180);
-  --primary: oklch(0.65 0.2 195);
-  --primary-foreground: oklch(0.98 0.01 180);
-  --secondary: oklch(0.75 0.15 85);
-  --secondary-foreground: oklch(0.08 0.02 240);
-  --muted: oklch(0.2 0.03 240);
-  --muted-foreground: oklch(0.6 0.05 195);
-  --accent: oklch(0.7 0.22 195);
-  --accent-foreground: oklch(0.98 0.01 180);
-  --destructive: oklch(0.6 0.25 25);
-  --destructive-foreground: oklch(0.98 0.01 180);
-  --border: oklch(0.25 0.04 240);
-  --input: oklch(0.25 0.04 240);
-  --ring: oklch(0.65 0.2 195);
-  --chart-1: oklch(0.65 0.2 195);
-  --chart-2: oklch(0.75 0.15 85);
-  --chart-3: oklch(0.6 0.18 280);
-  --chart-4: oklch(0.7 0.2 160);
-  --chart-5: oklch(0.65 0.22 340);
+  --background: 222 47% 6%;
+  --foreground: 180 10% 98%;
+  --card: 222 47% 8%;
+  --card-foreground: 180 10% 98%;
+  --popover: 222 47% 7%;
+  --popover-foreground: 180 10% 98%;
+  --primary: 186 100% 50%;
+  --primary-foreground: 222 47% 6%;
+  --secondary: 45 100% 60%;
+  --secondary-foreground: 222 47% 6%;
+  --muted: 222 30% 15%;
+  --muted-foreground: 186 20% 60%;
+  --accent: 186 80% 55%;
+  --accent-foreground: 180 10% 98%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 180 10% 98%;
+  --border: 222 30% 20%;
+  --input: 222 30% 20%;
+  --ring: 186 100% 50%;
   --radius: 0.75rem;
+  --chart-1: 186 100% 50%;
+  --chart-2: 45 100% 60%;
+  --chart-3: 142 76% 50%;
+  --chart-4: 280 80% 60%;
+  --chart-5: 0 84% 60%;
 
   /* Custom Narcoguard effect colors */
-  --glow-primary: oklch(0.65 0.2 195);
-  --glow-emergency: oklch(0.6 0.25 25);
-  --glow-success: oklch(0.7 0.2 160);
-  --glow-warning: oklch(0.75 0.15 85);
-  --holographic-1: oklch(0.65 0.2 195);
-  --holographic-2: oklch(0.7 0.22 280);
-  --holographic-3: oklch(0.75 0.15 85);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --glow-primary: hsl(186 100% 50%);
+  --glow-emergency: hsl(0 84% 60%);
+  --glow-success: hsl(142 76% 50%);
+  --glow-warning: hsl(45 100% 60%);
+  --holographic-1: hsl(186 100% 50%);
+  --holographic-2: hsl(280 80% 60%);
+  --holographic-3: hsl(45 100% 60%);
 }
 
 .dark {
-  --background: oklch(0.08 0.02 240);
-  --foreground: oklch(0.98 0.01 180);
-  --card: oklch(0.12 0.03 240);
-  --card-foreground: oklch(0.98 0.01 180);
-  --popover: oklch(0.1 0.03 240);
-  --popover-foreground: oklch(0.98 0.01 180);
-  --primary: oklch(0.65 0.2 195);
-  --primary-foreground: oklch(0.98 0.01 180);
-  --secondary: oklch(0.75 0.15 85);
-  --secondary-foreground: oklch(0.08 0.02 240);
-  --muted: oklch(0.2 0.03 240);
-  --muted-foreground: oklch(0.6 0.05 195);
-  --accent: oklch(0.7 0.22 195);
-  --accent-foreground: oklch(0.98 0.01 180);
-  --destructive: oklch(0.6 0.25 25);
-  --destructive-foreground: oklch(0.98 0.01 180);
-  --border: oklch(0.25 0.04 240);
-  --input: oklch(0.25 0.04 240);
-  --ring: oklch(0.65 0.2 195);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
-}
-
-@theme inline {
-  /* optional: --font-sans, --font-serif, --font-mono if they are applied in the layout.tsx */
-  --font-sans: "Geist", "Geist Fallback";
-  --font-mono: "Geist Mono", "Geist Mono Fallback";
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+  --background: 222 47% 6%;
+  --foreground: 180 10% 98%;
+  --card: 222 47% 8%;
+  --card-foreground: 180 10% 98%;
+  --popover: 222 47% 7%;
+  --popover-foreground: 180 10% 98%;
+  --primary: 186 100% 50%;
+  --primary-foreground: 222 47% 6%;
+  --secondary: 45 100% 60%;
+  --secondary-foreground: 222 47% 6%;
+  --muted: 222 30% 15%;
+  --muted-foreground: 186 20% 60%;
+  --accent: 186 80% 55%;
+  --accent-foreground: 180 10% 98%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 180 10% 98%;
+  --border: 222 30% 20%;
+  --input: 222 30% 20%;
+  --ring: 186 100% 50%;
+  --chart-1: 186 100% 50%;
+  --chart-2: 45 100% 60%;
+  --chart-3: 142 76% 50%;
+  --chart-4: 280 80% 60%;
+  --chart-5: 0 84% 60%;
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
@@ -261,7 +207,6 @@
   }
 }
 
-/* Added slide-up animation for install prompt */
 @keyframes slide-up {
   0% {
     transform: translateY(100%);
@@ -277,11 +222,9 @@
 .pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
 }
-
 .emergency-pulse {
   animation: emergency-pulse 1s ease-in-out infinite;
 }
-
 .holographic {
   background: linear-gradient(
     45deg,
@@ -293,31 +236,24 @@
   background-size: 300% 300%;
   animation: holographic-shift 3s ease infinite;
 }
-
 .float-animation {
   animation: float 3s ease-in-out infinite;
 }
-
 .shimmer {
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
   background-size: 1000px 100%;
   animation: shimmer 2s infinite;
 }
-
 .heartbeat {
   animation: heartbeat 1.5s ease-in-out infinite;
 }
-
 .glow-text {
   animation: glow-text 2s ease-in-out infinite;
 }
-
 .rotate-3d {
   animation: rotate-3d 10s linear infinite;
   transform-style: preserve-3d;
 }
-
-/* Added slide-up utility class */
 .animate-slide-up {
   animation: slide-up 0.5s ease-out;
 }
@@ -340,7 +276,6 @@
   position: relative;
   overflow: hidden;
 }
-
 .particle {
   position: absolute;
   width: 4px;
