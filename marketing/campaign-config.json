@@ -12,7 +12,7 @@
   "links": {
     "gofundme": "https://gofund.me/9acf270ea",
     "app": "https://narcoguard.app",
-    "demo": "https://v0-narcoguard-pwa-build-4zfrgsdwj-coden809s-projects.vercel.app/",
+    "demo": "https://narcoguard.app",
     "github": "https://github.com/coden809/narcoguard-pwa"
   },
   "contact": {
@@ -25,55 +25,44 @@
     "hashtags": {
       "primary": ["NarcoGuard", "SaveLives", "OpioidCrisis", "EndOverdose"],
       "secondary": ["Binghamton", "BroomeCounty", "HarmReduction", "OverdosePrevention", "Naloxone"],
-      "features": ["HeroNetwork", "AutoInjection", "RecoverySupport", "NG2Watch"]
+      "features": ["HeroNetwork", "AutoInjection", "RecoverySupport", "NG2Watch"],
+      "tiktok": ["fyp", "viral", "saveliveschallenge", "recovery", "harmreduction"],
+      "youtube": ["shorts", "medtech", "smartwatch", "healthtech"]
     },
-    "platforms": ["twitter", "facebook", "instagram", "linkedin", "reddit", "tiktok"],
-    "postTimes": [
-      "06:00",
-      "07:00",
-      "08:00",
-      "09:00",
-      "10:00",
-      "11:00",
-      "12:00",
-      "13:00",
-      "14:00",
-      "15:00",
-      "16:00",
-      "17:00",
-      "18:00",
-      "19:00",
-      "20:00",
-      "21:00",
-      "22:00",
-      "23:00"
-    ],
+    "platforms": ["twitter", "facebook", "instagram", "linkedin", "reddit", "tiktok", "youtube"],
+    "postFrequency": "hourly",
     "timezone": "America/New_York"
   },
   "messaging": {
     "tagline": "80 watches = 80 lives protected 24/7",
     "mission": "Fighting the opioid crisis with technology and community",
     "callToAction": "Every donation brings life-saving technology to Broome County",
-    "urgency": "130+ Americans die EVERY DAY from opioid overdoses. Help us change that."
+    "urgency": "130+ Americans die EVERY DAY from opioid overdoses. Help us change that.",
+    "personal": "I'm a recovering addict who lost friends to overdose. I built NarcoGuard to save lives."
+  },
+  "videoContent": {
+    "platforms": ["tiktok", "youtube_shorts", "instagram_reels"],
+    "themes": ["problem_awareness", "technology_demo", "personal_story", "call_to_action", "milestone_update"],
+    "frequency": "daily"
   },
   "freeAdvertisingSites": [
     "reddit.com/r/harmreduction",
     "reddit.com/r/opiates",
     "reddit.com/r/addiction",
-    "reddit.com/r/stopdrinking",
     "reddit.com/r/recovery",
-    "reddit.com/r/charity",
     "reddit.com/r/gofundme",
     "reddit.com/r/assistance",
     "reddit.com/r/newyork",
     "reddit.com/r/binghamton",
+    "reddit.com/r/upstate_new_york",
+    "reddit.com/r/charity",
+    "reddit.com/r/nonprofit",
     "craigslist.org/community",
-    "facebook.com/groups/harmreduction",
-    "facebook.com/groups/overdoseprevention",
+    "facebook.com/groups",
     "nextdoor.com",
-    "linkedin.com/feed",
+    "linkedin.com",
     "producthunt.com",
-    "hackernews",
-    "indiehackers.com"
+    "indiehackers.com",
+    "hackernews"
   ]
 }
