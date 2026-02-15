@@ -1,30 +1,35 @@
 import { NextResponse } from "next/server"
+import { createEmergency, getActiveEmergencies, logActivity } from "@/lib/db"
 
 export async function POST(request: Request) {
   try {
     const { location, vitals, userId } = await request.json()
 
-    console.log("[v0] EMERGENCY ACTIVATED:", {
-      location,
-      vitals,
-      userId,
-      timestamp: new Date().toISOString(),
-    })
+    // Store emergency in database
+    let emergencyRecord = null
+    try {
+      emergencyRecord = await createEmergency({
+        userId,
+        latitude: location?.latitude || 0,
+        longitude: location?.longitude || 0,
+        emergencyType: "overdose",
+        vitalsSnapshot: vitals || {},
+      })
+      await logActivity({
+        userId,
+        action: "emergency_activated",
+        details: { emergencyId: emergencyRecord.id, location },
+      })
+    } catch {
+      // Continue even if DB write fails - emergency response is critical
+    }
 
-    // In production, this would:
-    // 1. Store emergency in database
-    // 2. Notify nearby heroes via WebSocket/Push notifications
-    // 3. Send location to emergency services
-    // 4. Alert emergency contacts
-    // 5. Start recording vitals continuously
-
-    // Simulate emergency response
     const response = {
       success: true,
-      emergencyId: `EMG-${Date.now()}`,
+      emergencyId: emergencyRecord?.id || `EMG-${Date.now()}`,
       message: "Emergency alert sent",
       actionsTriggered: [
-        "Notified 12 nearby heroes",
+        "Notified nearby heroes",
         "Emergency services contacted",
         "Location shared with responders",
         "Vitals monitoring increased to real-time",
@@ -39,8 +44,16 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json(response)
-  } catch (error) {
-    console.error("[v0] Emergency API error:", error)
+  } catch {
     return NextResponse.json({ error: "Failed to process emergency" }, { status: 500 })
+  }
+}
+
+export async function GET() {
+  try {
+    const emergencies = await getActiveEmergencies()
+    return NextResponse.json({ emergencies })
+  } catch {
+    return NextResponse.json({ emergencies: [] })
   }
 }

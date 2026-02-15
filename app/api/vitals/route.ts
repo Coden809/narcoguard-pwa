@@ -1,18 +1,27 @@
 import { NextResponse } from "next/server"
 import { VitalsProcessor } from "@/lib/vitals-processor"
+import { recordVitals, logActivity } from "@/lib/db"
 
-// Global vitals processor instance (in production, use proper state management)
 const vitalsProcessor = new VitalsProcessor()
 
 export async function GET() {
-  // Simulate sensor readings (in production, get from actual sensors)
   const sensorReadings = vitalsProcessor.simulateSensorData()
-
-  // Process readings through Kalman filter
   const vitals = vitalsProcessor.processSensorReadings(sensorReadings)
-
-  // Check for overdose indicators
   const overdoseCheck = vitalsProcessor.detectOverdoseIndicators()
+
+  // Persist to database
+  try {
+    await recordVitals({
+      heartRate: vitals.heartRate,
+      spo2: vitals.spo2,
+      respiratoryRate: vitals.respiratoryRate,
+      temperature: vitals.temperature,
+      riskLevel: overdoseCheck.riskLevel,
+      overdoseDetected: overdoseCheck.isOverdose,
+    })
+  } catch {
+    // DB write is non-blocking - continue even if DB is unavailable
+  }
 
   return NextResponse.json({
     vitals,
@@ -23,18 +32,33 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const { readings } = await request.json()
+    const { readings, userId } = await request.json()
 
-    // Process real sensor readings
     const vitals = vitalsProcessor.processSensorReadings(readings)
     const overdoseCheck = vitalsProcessor.detectOverdoseIndicators()
+
+    // Persist to database
+    try {
+      await recordVitals({
+        userId,
+        heartRate: vitals.heartRate,
+        spo2: vitals.spo2,
+        respiratoryRate: vitals.respiratoryRate,
+        temperature: vitals.temperature,
+        riskLevel: overdoseCheck.riskLevel,
+        overdoseDetected: overdoseCheck.isOverdose,
+      })
+      await logActivity({ userId, action: "vitals_recorded", details: { riskLevel: overdoseCheck.riskLevel } })
+    } catch {
+      // Non-blocking
+    }
 
     return NextResponse.json({
       success: true,
       vitals,
       overdoseCheck,
     })
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Failed to process vitals" }, { status: 500 })
   }
 }

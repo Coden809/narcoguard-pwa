@@ -356,13 +356,51 @@ export default function NG2WatchPage() {
             </Button>
           </Link>
           <h1 className="text-3xl font-bold glow-text font-[family-name:var(--font-orbitron)]">NG2 WATCH BLUEPRINT</h1>
-          <a href="https://gofund.me/ac8905cc" target="_blank" rel="noopener noreferrer">
+          <a href="https://gofund.me/9acf270ea" target="_blank" rel="noopener noreferrer">
             <Button className="bg-green-500 hover:bg-green-600">
               <DollarSign className="w-4 h-4 mr-2" />
               Fund This Project
             </Button>
           </a>
         </header>
+
+        {/* Hero Product Showcase */}
+        <section className="mb-10 grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 rounded-2xl overflow-hidden neon-border">
+            <img src="/images/ng2-watch-hero.jpg" alt="NarcoGuard NG2 Auto-Injection Watch on wrist showing vital signs" className="w-full h-auto object-cover" />
+          </div>
+          <div className="flex flex-col gap-4">
+            <div className="rounded-2xl overflow-hidden neon-border flex-1">
+              <img src="/images/ng2-exploded-view.jpg" alt="NG2 Watch exploded engineering view showing all internal components" className="w-full h-full object-cover" />
+            </div>
+            <div className="rounded-2xl overflow-hidden neon-border flex-1">
+              <img src="/images/ng2-blueprint.jpg" alt="NG2 Watch engineering blueprint with cross-section and dimensions" className="w-full h-full object-cover" />
+            </div>
+          </div>
+        </section>
+
+        {/* Funding CTA Banner */}
+        <section className="mb-8 p-6 rounded-2xl neon-border bg-gradient-to-r from-green-500/20 via-primary/10 to-green-500/20">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div>
+              <h2 className="text-2xl font-bold">Help Us Build 80 Life-Saving Watches</h2>
+              <p className="text-muted-foreground mt-1">Each NG2 watch costs ${(totalPerUnit + naloxoneCartridge).toFixed(2)} to produce. Your donation directly funds real hardware that saves real lives in Broome County, NY.</p>
+            </div>
+            <div className="flex gap-3">
+              <a href="https://gofund.me/9acf270ea" target="_blank" rel="noopener noreferrer">
+                <Button size="lg" className="bg-green-500 hover:bg-green-600 text-white">
+                  <DollarSign className="w-5 h-5 mr-2" />
+                  Donate Now
+                </Button>
+              </a>
+              <a href="mailto:narcoguard607@gmail.com">
+                <Button size="lg" variant="outline" className="neon-border bg-transparent">
+                  Partner With Us
+                </Button>
+              </a>
+            </div>
+          </div>
+        </section>
 
         <Tabs defaultValue="3d-view" className="space-y-6">
           <TabsList className="grid grid-cols-4 glass neon-border">
@@ -729,7 +767,7 @@ export default function NG2WatchPage() {
                       ${((totalPerUnit + naloxoneCartridge) * 80).toFixed(2)}
                     </span>
                   </div>
-                  <a href="https://gofund.me/ac8905cc" target="_blank" rel="noopener noreferrer" className="block mt-4">
+                  <a href="https://gofund.me/9acf270ea" target="_blank" rel="noopener noreferrer" className="block mt-4">
                     <Button className="w-full bg-green-500 hover:bg-green-600" size="lg">
                       <DollarSign className="w-5 h-5 mr-2" />
                       Support This Project on GoFundMe
