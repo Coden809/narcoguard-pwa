@@ -50,47 +50,54 @@ export default function FundPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <section className="relative py-20 px-4 overflow-hidden">
+      {/* Hero Section with Generated Images */}
+      <section className="relative py-12 px-4 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-primary/20 to-background" />
-        <motion.div
-          className="relative z-10 max-w-4xl mx-auto text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <motion.div
-            className="inline-flex items-center gap-2 bg-red-500/20 text-red-400 px-4 py-2 rounded-full mb-6"
-            animate={{ scale: [1, 1.05, 1] }}
-            transition={{ repeat: Number.POSITIVE_INFINITY, duration: 2 }}
-          >
-            <Heart className="h-4 w-4" />
-            <span className="text-sm font-medium">Every 5 minutes, someone dies from overdose</span>
-          </motion.div>
-
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            <span className="text-primary">80 Watches</span> = <span className="text-green-400">80 Lives</span> Saved
-          </h1>
-
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Help us bring life-saving NarcoGuard NG2 auto-injection watches to Broome County, NY - one of the
-            hardest-hit communities in the opioid crisis.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              size="lg"
-              className="bg-green-500 hover:bg-green-600 text-white text-lg px-8 py-6"
-              onClick={() => window.open(GOFUNDME_URL, "_blank")}
-            >
-              <Heart className="mr-2 h-5 w-5" />
-              Donate Now
-            </Button>
-            <Button size="lg" variant="outline" className="text-lg px-8 py-6 bg-transparent" onClick={shareNative}>
-              <Share2 className="mr-2 h-5 w-5" />
-              Share Campaign
-            </Button>
+        <div className="relative z-10 max-w-6xl mx-auto">
+          {/* Campaign Hero Image */}
+          <div className="rounded-2xl overflow-hidden mb-8 border border-primary/30">
+            <img
+              src="/images/gofundme-hero.jpg"
+              alt="NarcoGuard - Life-saving technology meets human compassion"
+              className="w-full h-64 md:h-96 object-cover"
+            />
           </div>
-        </motion.div>
+
+          <div className="text-center">
+            <motion.div
+              className="inline-flex items-center gap-2 bg-red-500/20 text-red-400 px-4 py-2 rounded-full mb-6"
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ repeat: Number.POSITIVE_INFINITY, duration: 2 }}
+            >
+              <Heart className="h-4 w-4" />
+              <span className="text-sm font-medium">Every 5 minutes, someone in America dies from overdose</span>
+            </motion.div>
+
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-balance">
+              <span className="text-primary">80 Watches</span> = <span className="text-green-400">80 Lives</span> Saved
+            </h1>
+
+            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto text-balance">
+              Help us bring life-saving NarcoGuard NG2 auto-injection watches to Broome County, NY - one of the
+              hardest-hit communities in the opioid crisis.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
+                size="lg"
+                className="bg-green-500 hover:bg-green-600 text-white text-lg px-8 py-6"
+                onClick={() => window.open(GOFUNDME_URL, "_blank")}
+              >
+                <Heart className="mr-2 h-5 w-5" />
+                Donate Now
+              </Button>
+              <Button size="lg" variant="outline" className="text-lg px-8 py-6 bg-transparent" onClick={shareNative}>
+                <Share2 className="mr-2 h-5 w-5" />
+                Share Campaign
+              </Button>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Stats Bar */}
@@ -118,6 +125,30 @@ export default function FundPage() {
         <div className="max-w-4xl mx-auto">
           <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
             <h2 className="text-3xl font-bold mb-8 text-center">Our Story</h2>
+
+            {/* Image Gallery */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+              <div className="rounded-xl overflow-hidden border border-primary/20">
+                <img
+                  src="/images/watch-on-wrist-lifestyle.jpg"
+                  alt="NarcoGuard NG2 watch worn in everyday life - always protecting"
+                  className="w-full h-56 object-cover"
+                />
+                <div className="p-3 bg-card">
+                  <p className="text-sm text-muted-foreground">The NG2 watch - silent protection, worn every day</p>
+                </div>
+              </div>
+              <div className="rounded-xl overflow-hidden border border-primary/20">
+                <img
+                  src="/images/broome-county-community.jpg"
+                  alt="Binghamton, NY - the community NarcoGuard serves"
+                  className="w-full h-56 object-cover"
+                />
+                <div className="p-3 bg-card">
+                  <p className="text-sm text-muted-foreground">Binghamton, NY - our community, our mission</p>
+                </div>
+              </div>
+            </div>
 
             <Card className="bg-card/50 border-primary/20">
               <CardContent className="p-8">
@@ -202,9 +233,27 @@ export default function FundPage() {
       <section className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold mb-4 text-center">How NarcoGuard Works</h2>
-          <p className="text-muted-foreground text-center mb-12">
+          <p className="text-muted-foreground text-center mb-8">
             Revolutionary technology that saves lives automatically
           </p>
+
+          {/* NG2 Watch Showcase */}
+          <div className="grid md:grid-cols-2 gap-6 mb-12">
+            <div className="rounded-xl overflow-hidden border border-primary/20">
+              <img
+                src="/images/ng2-watch-hero.jpg"
+                alt="NarcoGuard NG2 auto-injection smartwatch prototype"
+                className="w-full h-64 object-cover"
+              />
+            </div>
+            <div className="rounded-xl overflow-hidden border border-primary/20">
+              <img
+                src="/images/ng2-exploded-view.jpg"
+                alt="NG2 Watch internal engineering and components"
+                className="w-full h-64 object-cover"
+              />
+            </div>
+          </div>
 
           <div className="grid md:grid-cols-4 gap-8">
             {[

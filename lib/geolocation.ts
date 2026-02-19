@@ -73,11 +73,11 @@ export class LocationService {
     })
   }
 
-  // Get a reasonable fallback location (NYC area as default for demo)
+  // Get a reasonable fallback location (Binghamton, NY as default for NarcoGuard)
   private getFallbackLocation(): Location {
     return {
-      latitude: 40.7128,
-      longitude: -74.006,
+      latitude: 42.0987,
+      longitude: -75.9180,
       accuracy: 5000, // 5km accuracy to indicate it's approximate
       timestamp: Date.now(),
     }

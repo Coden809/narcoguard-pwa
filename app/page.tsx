@@ -208,6 +208,12 @@ export default function DashboardPage() {
           </div>
 
           <div className="flex items-center gap-2">
+            <Link href="/fund">
+              <Button className="bg-green-500 hover:bg-green-600 text-black font-bold">
+                <DollarSign className="w-4 h-4 mr-2" />
+                Fund Us
+              </Button>
+            </Link>
             <Link href="/ng2-watch">
               <Button variant="outline" className="glass neon-border bg-transparent">
                 <Eye className="w-4 h-4 mr-2" />
