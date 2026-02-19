@@ -32,16 +32,14 @@ export function EmergencyButton() {
       })
 
       const result = await response.json()
-      console.log("[v0] Emergency response:", result)
 
       // Show success feedback
       alert(
         `✅ Emergency activated!\n\n${result.actionsTriggered.join("\n")}\n\nEstimated response: ${result.estimatedResponseTime}`,
       )
-    } catch (error) {
-      console.error("[v0] Emergency activation failed:", error)
+    } catch {
       // Fallback: Still show modal and try alternative emergency methods
-      alert("⚠️ Emergency system activated with fallback mode. Calling 911...")
+      alert("Emergency system activated with fallback mode. Calling 911...")
     }
   }
 
@@ -59,7 +57,7 @@ export function EmergencyButton() {
             title: "Emergency Location",
             text: shareText,
           })
-        } catch (err) {
+        } catch {
           console.log("[v0] Share cancelled or failed")
         }
       } else {
@@ -94,8 +92,8 @@ export function EmergencyButton() {
       alert(
         `✅ Alerted ${result.nearestHeroes?.length || 0} nearby heroes!\n\nNearest hero ETA: ${result.nearestHeroes?.[0]?.eta || "calculating..."}`,
       )
-    } catch (error) {
-      console.error("[v0] Hero alert failed:", error)
+    } catch {
+      // Hero alert failed - non-critical
     }
   }
 
