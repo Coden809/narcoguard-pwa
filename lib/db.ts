@@ -8,16 +8,17 @@ function getSQL() {
 }
 
 // ============ USERS ============
+// Schema: id, display_name, email, phone, role, avatar_url, is_active, onboarding_completed, created_at, updated_at
 export async function createUser(data: {
   email: string
-  name: string
+  displayName: string
   phone?: string
   role?: string
 }) {
   const sql = getSQL()
   const result = await sql`
-    INSERT INTO users (email, name, phone, role)
-    VALUES (${data.email}, ${data.name}, ${data.phone || null}, ${data.role || "user"})
+    INSERT INTO users (email, display_name, phone, role)
+    VALUES (${data.email}, ${data.displayName}, ${data.phone || null}, ${data.role || "user"})
     RETURNING *
   `
   return result[0]
@@ -29,15 +30,17 @@ export async function getUserByEmail(email: string) {
   return result[0] || null
 }
 
-export async function getUserById(id: string) {
+export async function getUserById(id: number) {
   const sql = getSQL()
   const result = await sql`SELECT * FROM users WHERE id = ${id}`
   return result[0] || null
 }
 
 // ============ VITALS ============
+// Schema: id, user_id, heart_rate, spo2, respiratory_rate, skin_temperature, blood_pressure_systolic,
+//         blood_pressure_diastolic, motion_level, risk_level, recorded_at
 export async function recordVitals(data: {
-  userId?: string
+  userId?: number | null
   heartRate: number
   spo2: number
   respiratoryRate: number
@@ -46,15 +49,16 @@ export async function recordVitals(data: {
   overdoseDetected?: boolean
 }) {
   const sql = getSQL()
+  const motionLevel = data.overdoseDetected ? "critical" : "normal"
   const result = await sql`
-    INSERT INTO vitals_readings (user_id, heart_rate, spo2, respiratory_rate, temperature, risk_level, overdose_detected)
-    VALUES (${data.userId || null}, ${data.heartRate}, ${data.spo2}, ${data.respiratoryRate}, ${data.temperature || null}, ${data.riskLevel}, ${data.overdoseDetected || false})
+    INSERT INTO vitals_readings (user_id, heart_rate, spo2, respiratory_rate, skin_temperature, risk_level, motion_level)
+    VALUES (${data.userId || null}, ${data.heartRate}, ${data.spo2}, ${data.respiratoryRate}, ${data.temperature || null}, ${data.riskLevel}, ${motionLevel})
     RETURNING *
   `
   return result[0]
 }
 
-export async function getRecentVitals(userId: string, limit = 50) {
+export async function getRecentVitals(userId: number, limit = 50) {
   const sql = getSQL()
   return await sql`
     SELECT * FROM vitals_readings 
@@ -64,7 +68,7 @@ export async function getRecentVitals(userId: string, limit = 50) {
   `
 }
 
-export async function getLatestVitals(userId: string) {
+export async function getLatestVitals(userId: number) {
   const sql = getSQL()
   const result = await sql`
     SELECT * FROM vitals_readings 
@@ -76,28 +80,32 @@ export async function getLatestVitals(userId: string) {
 }
 
 // ============ EMERGENCIES ============
+// Schema: id, emergency_id, user_id, latitude, longitude, address, emergency_type, status,
+//         vitals_at_trigger, auto_injection_triggered, naloxone_deployed, response_time_seconds,
+//         notes, resolved_at, created_at
 export async function createEmergency(data: {
-  userId?: string
+  userId?: number | null
   latitude: number
   longitude: number
   emergencyType?: string
   vitalsSnapshot?: object
 }) {
   const sql = getSQL()
+  const emergencyId = `EMG-${Date.now()}`
   const result = await sql`
-    INSERT INTO emergencies (user_id, latitude, longitude, emergency_type, vitals_snapshot)
-    VALUES (${data.userId || null}, ${data.latitude}, ${data.longitude}, ${data.emergencyType || "overdose"}, ${JSON.stringify(data.vitalsSnapshot || {})})
+    INSERT INTO emergencies (emergency_id, user_id, latitude, longitude, emergency_type, status, vitals_at_trigger)
+    VALUES (${emergencyId}, ${data.userId || null}, ${data.latitude}, ${data.longitude}, ${data.emergencyType || "overdose"}, ${"active"}, ${JSON.stringify(data.vitalsSnapshot || {})})
     RETURNING *
   `
   return result[0]
 }
 
-export async function updateEmergencyStatus(id: string, status: string, resolvedBy?: string) {
+export async function updateEmergencyStatus(id: number, status: string, notes?: string) {
   const sql = getSQL()
   const result = await sql`
     UPDATE emergencies 
     SET status = ${status}, 
-        resolved_by = ${resolvedBy || null},
+        notes = ${notes || null},
         resolved_at = ${status === "resolved" ? new Date().toISOString() : null}
     WHERE id = ${id}
     RETURNING *
@@ -115,65 +123,67 @@ export async function getActiveEmergencies() {
 }
 
 // ============ HEROES ============
+// Schema: id, user_id, is_certified, narcan_trained, cpr_trained, carries_naloxone,
+//         availability_status, response_radius_miles, total_responses, certification_date,
+//         last_active_at, created_at
 export async function registerHero(data: {
-  userId?: string
-  name: string
-  email: string
-  phone?: string
-  latitude?: number
-  longitude?: number
-  certifications?: string[]
+  userId?: number | null
+  narcanTrained?: boolean
+  cprTrained?: boolean
+  carriesNaloxone?: boolean
+  responseRadiusMiles?: number
 }) {
   const sql = getSQL()
   const result = await sql`
-    INSERT INTO heroes (user_id, name, email, phone, latitude, longitude, certifications)
-    VALUES (${data.userId || null}, ${data.name}, ${data.email}, ${data.phone || null}, ${data.latitude || null}, ${data.longitude || null}, ${JSON.stringify(data.certifications || [])})
+    INSERT INTO heroes (user_id, narcan_trained, cpr_trained, carries_naloxone, availability_status, response_radius_miles)
+    VALUES (${data.userId || null}, ${data.narcanTrained || false}, ${data.cprTrained || false}, ${data.carriesNaloxone || false}, ${"available"}, ${data.responseRadiusMiles || 5})
     RETURNING *
   `
   return result[0]
 }
 
-export async function getNearbyHeroes(lat: number, lon: number, radiusMiles = 5) {
+export async function getAvailableHeroes() {
   const sql = getSQL()
   return await sql`
-    SELECT *, 
-      (3959 * acos(cos(radians(${lat})) * cos(radians(latitude)) * cos(radians(longitude) - radians(${lon})) + sin(radians(${lat})) * sin(radians(latitude)))) AS distance
-    FROM heroes 
-    WHERE is_active = true AND is_available = true
-      AND latitude IS NOT NULL AND longitude IS NOT NULL
-    HAVING distance < ${radiusMiles}
-    ORDER BY distance
+    SELECT h.*, u.display_name, u.phone
+    FROM heroes h
+    LEFT JOIN users u ON h.user_id = u.id
+    WHERE h.availability_status = 'available'
+    ORDER BY h.last_active_at DESC NULLS LAST
     LIMIT 20
   `
 }
 
-export async function updateHeroLocation(heroId: string, lat: number, lon: number) {
+export async function updateHeroStatus(heroId: number, status: string) {
   const sql = getSQL()
   return await sql`
-    UPDATE heroes SET latitude = ${lat}, longitude = ${lon}, last_active = NOW()
+    UPDATE heroes SET availability_status = ${status}, last_active_at = NOW()
     WHERE id = ${heroId}
     RETURNING *
   `
 }
 
 // ============ EMERGENCY RESPONSES ============
+// Schema: id, emergency_id, hero_id, status, eta_seconds, distance_miles, arrived_at, created_at
 export async function createEmergencyResponse(data: {
-  emergencyId: string
-  heroId: string
-  eta?: number
+  emergencyId: number
+  heroId: number
+  etaSeconds?: number
+  distanceMiles?: number
 }) {
   const sql = getSQL()
   const result = await sql`
-    INSERT INTO emergency_responses (emergency_id, hero_id, eta_minutes)
-    VALUES (${data.emergencyId}, ${data.heroId}, ${data.eta || null})
+    INSERT INTO emergency_responses (emergency_id, hero_id, status, eta_seconds, distance_miles)
+    VALUES (${data.emergencyId}, ${data.heroId}, ${"responding"}, ${data.etaSeconds || null}, ${data.distanceMiles || null})
     RETURNING *
   `
   return result[0]
 }
 
 // ============ LOCATIONS ============
+// Schema: id, user_id, latitude, longitude, accuracy, altitude, speed, heading, recorded_at
 export async function updateUserLocation(data: {
-  userId?: string
+  userId?: number | null
   latitude: number
   longitude: number
   accuracy?: number
@@ -188,16 +198,17 @@ export async function updateUserLocation(data: {
 }
 
 // ============ WATCHES ============
+// Schema: id, user_id, serial_number, firmware_version, battery_level, is_connected,
+//         naloxone_cartridge_status, naloxone_expiry_date, last_sync_at, created_at
 export async function registerWatch(data: {
-  userId?: string
+  userId?: number | null
   serialNumber: string
-  model?: string
   firmwareVersion?: string
 }) {
   const sql = getSQL()
   const result = await sql`
-    INSERT INTO watches (user_id, serial_number, model, firmware_version)
-    VALUES (${data.userId || null}, ${data.serialNumber}, ${data.model || "NG2-Pro"}, ${data.firmwareVersion || "1.0.0"})
+    INSERT INTO watches (user_id, serial_number, firmware_version, naloxone_cartridge_status)
+    VALUES (${data.userId || null}, ${data.serialNumber}, ${data.firmwareVersion || "1.0.0"}, ${"loaded"})
     RETURNING *
   `
   return result[0]
@@ -210,17 +221,19 @@ export async function getWatchBySerial(serial: string) {
 }
 
 // ============ DONATIONS ============
+// Schema: id, donor_name, donor_email, amount, source, message, is_anonymous, created_at
 export async function recordDonation(data: {
   donorName?: string
   donorEmail?: string
   amount: number
   source?: string
   message?: string
+  isAnonymous?: boolean
 }) {
   const sql = getSQL()
   const result = await sql`
-    INSERT INTO donations (donor_name, donor_email, amount, source, message)
-    VALUES (${data.donorName || "Anonymous"}, ${data.donorEmail || null}, ${data.amount}, ${data.source || "gofundme"}, ${data.message || null})
+    INSERT INTO donations (donor_name, donor_email, amount, source, message, is_anonymous)
+    VALUES (${data.donorName || "Anonymous"}, ${data.donorEmail || null}, ${data.amount}, ${data.source || "gofundme"}, ${data.message || null}, ${data.isAnonymous || false})
     RETURNING *
   `
   return result[0]
@@ -239,51 +252,55 @@ export async function getDonationStats() {
 }
 
 // ============ ACTIVITY LOG ============
+// Schema: id, user_id, action, details, ip_address, created_at
 export async function logActivity(data: {
-  userId?: string
+  userId?: number | null
   action: string
   details?: object
+  ipAddress?: string
 }) {
   const sql = getSQL()
   return await sql`
-    INSERT INTO activity_log (user_id, action, details)
-    VALUES (${data.userId || null}, ${data.action}, ${JSON.stringify(data.details || {})})
+    INSERT INTO activity_log (user_id, action, details, ip_address)
+    VALUES (${data.userId || null}, ${data.action}, ${JSON.stringify(data.details || {})}, ${data.ipAddress || null})
   `
 }
 
 // ============ LEGAL AGREEMENTS ============
+// Schema: id, user_id, agreement_type, ip_address, agreed_at
 export async function recordAgreement(data: {
-  userId?: string
+  userId?: number | null
   agreementType: string
-  version?: string
   ipAddress?: string
 }) {
   const sql = getSQL()
   const result = await sql`
-    INSERT INTO legal_agreements (user_id, agreement_type, agreement_version, ip_address)
-    VALUES (${data.userId || null}, ${data.agreementType}, ${data.version || "1.0"}, ${data.ipAddress || null})
+    INSERT INTO legal_agreements (user_id, agreement_type, ip_address)
+    VALUES (${data.userId || null}, ${data.agreementType}, ${data.ipAddress || null})
     RETURNING *
   `
   return result[0]
 }
 
 // ============ EMERGENCY CONTACTS ============
+// Schema: id, user_id, name, phone, relationship, is_primary, created_at
 export async function addEmergencyContact(data: {
-  userId: string
+  userId: number
   name: string
   phone: string
   relationship?: string
+  isPrimary?: boolean
 }) {
   const sql = getSQL()
   const result = await sql`
-    INSERT INTO emergency_contacts (user_id, name, phone, relationship)
-    VALUES (${data.userId}, ${data.name}, ${data.phone}, ${data.relationship || null})
+    INSERT INTO emergency_contacts (user_id, name, phone, relationship, is_primary)
+    VALUES (${data.userId}, ${data.name}, ${data.phone}, ${data.relationship || null}, ${data.isPrimary || false})
     RETURNING *
   `
   return result[0]
 }
 
-export async function getEmergencyContacts(userId: string) {
+export async function getEmergencyContacts(userId: number) {
   const sql = getSQL()
   return await sql`
     SELECT * FROM emergency_contacts WHERE user_id = ${userId} ORDER BY is_primary DESC
@@ -295,7 +312,7 @@ export async function getDashboardStats() {
   const sql = getSQL()
   const [users, heroes, emergencies, donations] = await Promise.all([
     sql`SELECT COUNT(*) as count FROM users`,
-    sql`SELECT COUNT(*) as count FROM heroes WHERE is_active = true`,
+    sql`SELECT COUNT(*) as count FROM heroes WHERE availability_status = 'available'`,
     sql`SELECT COUNT(*) as count FROM emergencies`,
     sql`SELECT COALESCE(SUM(amount), 0) as total FROM donations`,
   ])
